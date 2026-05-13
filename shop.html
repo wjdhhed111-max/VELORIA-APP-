@@ -14,47 +14,47 @@
             --primary-bg: #ffffff;
             --secondary-bg: #f7f8fa;
             --text-main: #2d3436;
-            --accent-blue: #4834d4;
+            --accent-gold: #b88e2f;
         }
         body {
             background-color: var(--primary-bg);
             color: var(--text-main);
-            font-family: 'Inter', 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
             margin: 0;
-            padding-bottom: 80px;
+            padding-bottom: 90px;
         }
 
-        /* Top Header Area */
+        /* Top Header */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 15px 20px;
-            border-bottom: 1px solid #f0f0f0;
+            background: #fff;
         }
-        .header-logo { font-weight: 800; font-size: 20px; letter-spacing: 1px; color: #1e272e; }
-        .header-icons i { font-size: 18px; margin-left: 18px; color: #57606f; cursor: pointer; }
+        .header-logo { font-weight: 800; font-size: 20px; letter-spacing: 1px; }
+        .header-icons i { font-size: 18px; margin-left: 15px; color: #57606f; cursor: pointer; }
 
-        /* Main Logo Section */
-        .logo-center-box {
+        /* Main Center Logo */
+        .logo-box {
             text-align: center;
-            padding: 20px 0;
-            position: relative;
+            padding: 10px 0;
         }
-        .logo-center-box img { width: 100px; }
+        .logo-box img { width: 90px; }
 
-        /* Hero Text */
-        .hero-section { padding: 0 20px; margin-top: 10px; }
-        .hero-section h1 { font-size: 34px; margin: 0; color: #2d3436; font-weight: 800; }
-        .hero-section p { font-size: 15px; color: #636e72; margin: 5px 0 20px 0; }
+        /* Hero Titles */
+        .hero { padding: 0 20px; text-align: left; }
+        .hero h1 { margin: 0; font-size: 32px; font-weight: 800; }
+        .hero p { margin: 5px 0 20px 0; color: #636e72; font-size: 14px; }
 
-        /* Search Bar */
+        /* Search Bar Area */
         .search-area {
             display: flex;
             padding: 0 20px;
             gap: 10px;
+            margin-bottom: 20px;
         }
-        .search-wrapper {
+        .search-input-box {
             background: #f1f2f6;
             flex-grow: 1;
             padding: 12px 15px;
@@ -62,95 +62,91 @@
             display: flex;
             align-items: center;
         }
-        .search-wrapper input {
+        .search-input-box input {
             border: none;
             background: transparent;
             width: 100%;
             margin-left: 10px;
             outline: none;
-            font-size: 15px;
         }
-        .filter-toggle {
+        .filter-btn {
             background: #f1f2f6;
             padding: 12px 15px;
             border-radius: 12px;
             color: #f1c40f;
-            display: flex;
-            align-items: center;
         }
 
-        /* Categories Bar */
-        .category-tabs {
+        /* Category Tabs Scrollable */
+        .tabs {
             display: flex;
             overflow-x: auto;
-            padding: 20px;
-            gap: 25px;
+            padding: 0 20px 15px 20px;
+            gap: 20px;
             white-space: nowrap;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid #f1f2f6;
         }
-        .category-tabs::-webkit-scrollbar { display: none; }
-        .tab {
+        .tabs::-webkit-scrollbar { display: none; }
+        .tab-item {
             font-size: 14px;
             font-weight: 600;
-            color: #636e72;
+            color: #b2bec3;
             cursor: pointer;
-            padding-bottom: 8px;
+            padding-bottom: 5px;
         }
-        .tab.active {
+        .tab-item.active {
             color: #2d3436;
             border-bottom: 3px solid #4834d4;
         }
 
-        /* Shop Grid */
-        .shop-container {
+        /* Section Title */
+        .section-name {
             padding: 20px;
+            font-size: 18px;
+            font-weight: 700;
         }
-        .shop-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; display: block; }
+
+        /* Shop Grid */
         .shop-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
+            padding: 0 20px;
         }
         .shop-card {
-            background: white;
+            background: #fff;
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
-        .shop-banner {
-            width: 100%;
-            height: 110px;
-            object-fit: cover;
-            background-color: #eee;
-        }
-        .shop-content { padding: 12px; }
-        .shop-name { font-weight: 700; font-size: 14px; margin: 0; display: block; }
-        .shop-type { font-size: 12px; color: #636e72; margin-top: 4px; display: block; }
-        .shop-stats { 
-            margin-top: 8px; 
-            font-size: 11px; 
-            display: flex; 
-            align-items: center; 
-            font-weight: 700; 
-        }
-        .star-icon { color: #f1c40f; margin-right: 4px; }
+        .shop-img { width: 100%; height: 110px; object-fit: cover; background: #eee; }
+        .shop-detail { padding: 10px; }
+        .shop-detail h4 { margin: 0; font-size: 13px; font-weight: 700; }
+        .shop-detail p { margin: 4px 0; font-size: 11px; color: #636e72; }
+        .shop-rating { font-size: 11px; font-weight: bold; display: flex; align-items: center; }
+        .shop-rating i { color: #f1c40f; margin-right: 3px; }
 
-        /* Bottom Nav */
+        /* Bottom Nav - Fixed & Linked */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: white;
-            padding: 10px 0;
+            background: #ffffff;
             display: flex;
             justify-content: space-around;
-            border-top: 1px solid #f0f0f0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.02);
+            padding: 12px 0;
+            border-top: 1px solid #f1f2f6;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.03);
         }
-        .nav-link { text-align: center; color: #b2bec3; text-decoration: none; font-size: 11px; flex: 1; }
-        .nav-link.active { color: #b88e2f; } /* Gold/Brown color as seen in design */
+        .nav-link {
+            text-align: center;
+            text-decoration: none;
+            color: #b2bec3;
+            flex: 1;
+        }
+        .nav-link.active { color: var(--accent-gold); }
         .nav-link i { font-size: 20px; display: block; margin-bottom: 4px; }
+        .nav-link span { font-size: 10px; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -163,65 +159,75 @@
         </div>
     </div>
 
-    <div class="logo-center-box">
+    <div class="logo-box">
         <img src="Logo.png" alt="Veloria Logo">
     </div>
 
-    <div class="hero-section">
+    <div class="hero">
         <h1>VELORIA</h1>
         <p>Digital Products Only Mall</p>
     </div>
 
     <div class="search-area">
-        <div class="search-wrapper">
+        <div class="search-input-box">
             <i class="fa-solid fa-magnifying-glass" style="color:#b2bec3"></i>
             <input type="text" placeholder="Search shops...">
         </div>
-        <div class="filter-toggle">
+        <div class="filter-btn">
             <i class="fa-solid fa-sliders"></i>
         </div>
     </div>
 
-    <div class="category-tabs">
-        <div class="tab">All</div>
-        <div class="tab">Graphics & Design</div>
-        <div class="tab active">Templates</div>
-        <div class="tab">Themes & Plugins</div>
-        <div class="tab">E-Books & Guides</div>
+    <div class="tabs">
+        <div class="tab-item">All</div>
+        <div class="tab-item">Graphics & Design</div>
+        <div class="tab-item active">Templates</div>
+        <div class="tab-item">Themes & Plugins</div>
+        <div class="tab-item">E-Books & Guides</div>
     </div>
 
-    <div class="shop-container">
-        <span class="shop-title">Templates</span>
-        <div class="shop-grid">
-            <div class="shop-card">
-                <img src="https://via.placeholder.com/200x110?text=Brandify" class="shop-banner">
-                <div class="shop-content">
-                    <span class="shop-name">Brandify Templates</span>
-                    <span class="shop-type">Business Templates</span>
-                    <div class="shop-stats">
-                        <i class="fa-solid fa-star star-icon"></i> 4.8 <span style="color:#b2bec3; font-weight:400; margin-left:5px;">421</span>
-                    </div>
-                </div>
+    <div class="section-name">Templates</div>
+
+    <div class="shop-grid">
+        <div class="shop-card">
+            <img src="https://via.placeholder.com/200x110/f1f2f6/2d3436?text=Brandify" class="shop-img">
+            <div class="shop-detail">
+                <h4>Brandify Templates</h4>
+                <p>Business Templates</p>
+                <div class="shop-rating"><i class="fa-solid fa-star"></i> 4.8 <span style="color:#b2bec3; margin-left:5px;">421</span></div>
             </div>
-            <div class="shop-card">
-                <img src="https://via.placeholder.com/200x110?text=PixelCrafters" class="shop-banner">
-                <div class="shop-content">
-                    <span class="shop-name">PixelCrafters</span>
-                    <span class="shop-type">Creative Templates</span>
-                    <div class="shop-stats">
-                        <i class="fa-solid fa-star star-icon"></i> 4.6 <span style="color:#b2bec3; font-weight:400; margin-left:5px;">387</span>
-                    </div>
-                </div>
+        </div>
+        <div class="shop-card">
+            <img src="https://via.placeholder.com/200x110/f1f2f6/2d3436?text=PixelCrafters" class="shop-img">
+            <div class="shop-detail">
+                <h4>PixelCrafters</h4>
+                <p>Creative Templates</p>
+                <div class="shop-rating"><i class="fa-solid fa-star"></i> 4.6 <span style="color:#b2bec3; margin-left:5px;">387</span></div>
             </div>
         </div>
     </div>
 
     <nav class="bottom-nav">
-        <a href="home.html" class="nav-link"><i class="fa-solid fa-house"></i><span>Home</span></a>
-        <a href="shops.html" class="nav-link active"><i class="fa-solid fa-store"></i><span>Shops</span></a>
-        <a href="#" class="nav-link"><i class="fa-solid fa-dollar-sign"></i><span>Sell</span></a>
-        <a href="#" class="nav-link"><i class="fa-solid fa-briefcase"></i><span>Chat Box</span></a>
-        <a href="#" class="nav-link"><i class="fa-solid fa-user"></i><span>Account</span></a>
+        <a href="home.html" class="nav-link">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="shops.html" class="nav-link active">
+            <i class="fa-solid fa-store"></i>
+            <span>Shops</span>
+        </a>
+        <a href="#" class="nav-link">
+            <i class="fa-solid fa-dollar-sign"></i>
+            <span>Sell</span>
+        </a>
+        <a href="#" class="nav-link">
+            <i class="fa-solid fa-briefcase"></i>
+            <span>Chat Box</span>
+        </a>
+        <a href="#" class="nav-link">
+            <i class="fa-solid fa-user"></i>
+            <span>Account</span>
+        </a>
     </nav>
 
     <script>
@@ -235,6 +241,11 @@
           appId: "1:462890026725:web:ce9a64a58f7ac6ffdd360c"
         };
         firebase.initializeApp(firebaseConfig);
+
+        // Login Check
+        firebase.auth().onAuthStateChanged(user => {
+            if (!user) { window.location.href = "index.html"; }
+        });
     </script>
 </body>
 </html>
