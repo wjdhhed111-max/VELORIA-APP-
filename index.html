@@ -12,7 +12,7 @@
         body {
             background-color: #0d1b2a;
             color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -34,6 +34,7 @@
         .seller-card { background-color: #d1e3e9; color: #1b263b; }
         .customer-card { background-color: #e2d1f9; color: #1b263b; }
         .inner-logo { width: 80px; margin-bottom: 15px; }
+        
         .google-btn {
             width: 100%;
             padding: 12px;
@@ -49,7 +50,15 @@
         }
         .seller-btn { background: linear-gradient(45deg, #b8860b, #ffd700); color: #1b263b; }
         .customer-btn { background: linear-gradient(45deg, #bdc3c7, #ffffff); color: #1b263b; }
-        .google-icon { width: 20px; margin-right: 10px; }
+        
+        /* Google Logo အရွယ်အစားသတ်မှတ်ချက် */
+        .google-icon { 
+            width: 22px; 
+            height: 22px; 
+            margin-right: 12px; 
+            object-fit: contain;
+        }
+        .footer-text { font-size: 12px; margin-top: 30px; opacity: 0.6; }
     </style>
 </head>
 <body>
@@ -57,25 +66,27 @@
     <img src="Logo.png" alt="Veloria" class="main-logo">
 
     <div class="card seller-card">
-        <h3>Seller Account</h3>
+        <h3 style="margin-top:0">Seller Account</h3>
         <img src="Logo.png" class="inner-logo">
         <button class="google-btn seller-btn" onclick="login()">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" class="google-icon">
+            <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" class="google-icon">
             Sign in with Google
         </button>
     </div>
 
     <div class="card customer-card">
-        <h3>Customer Account</h3>
+        <h3 style="margin-top:0">Customer Account</h3>
         <img src="Logo.png" class="inner-logo">
         <button class="google-btn customer-btn" onclick="login()">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" class="google-icon">
+            <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" class="google-icon">
             Sign in with Google
         </button>
     </div>
 
+    <div class="footer-text">© 2025 Veloria. All rights reserved.</div>
+
     <script>
-        // ဘရိုရဲ့ Firebase Config အသစ်
+        // ဘရိုရဲ့ Config အသစ်
         const firebaseConfig = {
           apiKey: "AIzaSyA7JcBnkfoj-X1mOI2TMVNjv4i5NVzwYM0",
           authDomain: "veloria-v3.firebaseapp.com",
@@ -85,7 +96,6 @@
           appId: "1:462890026725:web:ce9a64a58f7ac6ffdd360c"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
@@ -93,10 +103,10 @@
             const provider = new firebase.auth.GoogleAuthProvider();
             auth.signInWithPopup(provider)
                 .then((result) => {
-                    alert("Login Success! Welcome " + result.user.displayName);
                     // Login အောင်မြင်ရင် home.html ကို သွားမယ်
                     window.location.href = "home.html";
                 }).catch((error) => {
+                    console.error(error);
                     alert("Error: " + error.message);
                 });
         }
