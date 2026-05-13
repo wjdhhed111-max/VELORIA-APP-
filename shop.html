@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veloria - Shops</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-bg: #ffffff;
+            --secondary-bg: #f7f8fa;
+            --text-main: #2d3436;
+            --accent-blue: #4834d4;
+        }
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            margin: 0;
+            padding-bottom: 80px;
+        }
+
+        /* Top Header Area */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .header-logo { font-weight: 800; font-size: 20px; letter-spacing: 1px; color: #1e272e; }
+        .header-icons i { font-size: 18px; margin-left: 18px; color: #57606f; cursor: pointer; }
+
+        /* Main Logo Section */
+        .logo-center-box {
+            text-align: center;
+            padding: 20px 0;
+            position: relative;
+        }
+        .logo-center-box img { width: 100px; }
+
+        /* Hero Text */
+        .hero-section { padding: 0 20px; margin-top: 10px; }
+        .hero-section h1 { font-size: 34px; margin: 0; color: #2d3436; font-weight: 800; }
+        .hero-section p { font-size: 15px; color: #636e72; margin: 5px 0 20px 0; }
+
+        /* Search Bar */
+        .search-area {
+            display: flex;
+            padding: 0 20px;
+            gap: 10px;
+        }
+        .search-wrapper {
+            background: #f1f2f6;
+            flex-grow: 1;
+            padding: 12px 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+        }
+        .search-wrapper input {
+            border: none;
+            background: transparent;
+            width: 100%;
+            margin-left: 10px;
+            outline: none;
+            font-size: 15px;
+        }
+        .filter-toggle {
+            background: #f1f2f6;
+            padding: 12px 15px;
+            border-radius: 12px;
+            color: #f1c40f;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Categories Bar */
+        .category-tabs {
+            display: flex;
+            overflow-x: auto;
+            padding: 20px;
+            gap: 25px;
+            white-space: nowrap;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .category-tabs::-webkit-scrollbar { display: none; }
+        .tab {
+            font-size: 14px;
+            font-weight: 600;
+            color: #636e72;
+            cursor: pointer;
+            padding-bottom: 8px;
+        }
+        .tab.active {
+            color: #2d3436;
+            border-bottom: 3px solid #4834d4;
+        }
+
+        /* Shop Grid */
+        .shop-container {
+            padding: 20px;
+        }
+        .shop-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; display: block; }
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .shop-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .shop-banner {
+            width: 100%;
+            height: 110px;
+            object-fit: cover;
+            background-color: #eee;
+        }
+        .shop-content { padding: 12px; }
+        .shop-name { font-weight: 700; font-size: 14px; margin: 0; display: block; }
+        .shop-type { font-size: 12px; color: #636e72; margin-top: 4px; display: block; }
+        .shop-stats { 
+            margin-top: 8px; 
+            font-size: 11px; 
+            display: flex; 
+            align-items: center; 
+            font-weight: 700; 
+        }
+        .star-icon { color: #f1c40f; margin-right: 4px; }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #f0f0f0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.02);
+        }
+        .nav-link { text-align: center; color: #b2bec3; text-decoration: none; font-size: 11px; flex: 1; }
+        .nav-link.active { color: #b88e2f; } /* Gold/Brown color as seen in design */
+        .nav-link i { font-size: 20px; display: block; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-logo">VELORIA</div>
+        <div class="header-icons">
+            <i class="fa-regular fa-bell"></i>
+            <i class="fa-solid fa-cart-shopping"></i>
+        </div>
+    </div>
+
+    <div class="logo-center-box">
+        <img src="Logo.png" alt="Veloria Logo">
+    </div>
+
+    <div class="hero-section">
+        <h1>VELORIA</h1>
+        <p>Digital Products Only Mall</p>
+    </div>
+
+    <div class="search-area">
+        <div class="search-wrapper">
+            <i class="fa-solid fa-magnifying-glass" style="color:#b2bec3"></i>
+            <input type="text" placeholder="Search shops...">
+        </div>
+        <div class="filter-toggle">
+            <i class="fa-solid fa-sliders"></i>
+        </div>
+    </div>
+
+    <div class="category-tabs">
+        <div class="tab">All</div>
+        <div class="tab">Graphics & Design</div>
+        <div class="tab active">Templates</div>
+        <div class="tab">Themes & Plugins</div>
+        <div class="tab">E-Books & Guides</div>
+    </div>
+
+    <div class="shop-container">
+        <span class="shop-title">Templates</span>
+        <div class="shop-grid">
+            <div class="shop-card">
+                <img src="https://via.placeholder.com/200x110?text=Brandify" class="shop-banner">
+                <div class="shop-content">
+                    <span class="shop-name">Brandify Templates</span>
+                    <span class="shop-type">Business Templates</span>
+                    <div class="shop-stats">
+                        <i class="fa-solid fa-star star-icon"></i> 4.8 <span style="color:#b2bec3; font-weight:400; margin-left:5px;">421</span>
+                    </div>
+                </div>
+            </div>
+            <div class="shop-card">
+                <img src="https://via.placeholder.com/200x110?text=PixelCrafters" class="shop-banner">
+                <div class="shop-content">
+                    <span class="shop-name">PixelCrafters</span>
+                    <span class="shop-type">Creative Templates</span>
+                    <div class="shop-stats">
+                        <i class="fa-solid fa-star star-icon"></i> 4.6 <span style="color:#b2bec3; font-weight:400; margin-left:5px;">387</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="home.html" class="nav-link"><i class="fa-solid fa-house"></i><span>Home</span></a>
+        <a href="shops.html" class="nav-link active"><i class="fa-solid fa-store"></i><span>Shops</span></a>
+        <a href="#" class="nav-link"><i class="fa-solid fa-dollar-sign"></i><span>Sell</span></a>
+        <a href="#" class="nav-link"><i class="fa-solid fa-briefcase"></i><span>Chat Box</span></a>
+        <a href="#" class="nav-link"><i class="fa-solid fa-user"></i><span>Account</span></a>
+    </nav>
+
+    <script>
+        // Firebase Config (ဘရိုရဲ့ Config ကို ဒီမှာ ပြန်ထည့်ပါ)
+        const firebaseConfig = {
+          apiKey: "AIzaSyA7JcBnkfoj-X1mOI2TMVNjv4i5NVzwYM0",
+          authDomain: "veloria-v3.firebaseapp.com",
+          projectId: "veloria-v3",
+          storageBucket: "veloria-v3.firebasestorage.app",
+          messagingSenderId: "462890026725",
+          appId: "1:462890026725:web:ce9a64a58f7ac6ffdd360c"
+        };
+        firebase.initializeApp(firebaseConfig);
+    </script>
+</body>
+</html>
+
