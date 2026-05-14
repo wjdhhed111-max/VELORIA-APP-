@@ -3,92 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veloria - Welcome</title>
-    
+    <title>Veloria Login</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        :root { --gold: #b88e2f; --dark: #0f172a; }
-        
         body {
-            margin: 0; padding: 0;
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), 
-                        url('https://source.unsplash.com/random/900x1600/?luxury,abstract');
-            background-size: cover;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            text-align: center;
+            margin: 0; padding: 0; font-family: sans-serif;
+            background-color: #0d1b2a;
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh; color: white;
+        }
+        .main-logo { width: 220px; margin-top: 50px; margin-bottom: 30px; }
+        
+        /* Card Containers */
+        .card {
+            width: 90%; max-width: 380px; border-radius: 25px; margin-bottom: 25px;
+            padding: 20px; position: relative; overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .welcome-box {
-            padding: 30px;
-            width: 80%;
-            max-width: 350px;
+        /* Seller Card Style */
+        .seller-card {
+            background: linear-gradient(135deg, #d0e6f5 0%, #b8d4e9 100%);
+            background-image: url('https://www.transparenttextures.com/patterns/circuit-board.png');
+            color: #1b263b;
         }
 
-        h1 { font-size: 42px; margin-bottom: 10px; font-weight: 800; letter-spacing: 2px; }
-        p { opacity: 0.8; font-size: 14px; margin-bottom: 40px; }
+        /* Customer Card Style */
+        .customer-card {
+            background: linear-gradient(135deg, #e0c3fc 0%, #fbc2eb 100%);
+            background-image: url('https://www.transparenttextures.com/patterns/leaves.png');
+            color: #2d132c;
+        }
 
+        .acc-type { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 18px; margin-bottom: 10px; }
+        .acc-type i { background: #d4af37; color: white; padding: 8px; border-radius: 50%; font-size: 14px; }
+
+        .inner-logo { display: block; width: 140px; margin: 15px auto; }
+
+        /* Sign In Buttons */
         .google-btn {
-            background: white;
-            color: #444;
-            width: 100%;
-            padding: 15px;
-            border-radius: 50px;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: 0.3s;
+            width: 100%; padding: 14px; border-radius: 50px; border: none;
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+            font-weight: 700; cursor: pointer; font-size: 16px; margin-top: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.3s;
         }
+        .seller-btn { background: linear-gradient(to right, #d4af37, #f1d592); color: #1b263b; }
+        .customer-btn { background: linear-gradient(to right, #bdc3c7, #2c3e50); color: white; }
 
-        .google-btn:active { transform: scale(0.95); }
-        .google-btn img { width: 20px; }
-
-        /* Loading Animation */
-        #loader {
-            display: none;
-            margin-top: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid var(--gold);
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .google-icon { width: 20px; background: white; border-radius: 50%; padding: 2px; }
+        
+        footer { font-size: 12px; opacity: 0.7; margin-top: auto; padding: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="welcome-box">
-        <h1>VELORIA</h1>
-        <p>Premium Digital Marketplace</p>
+    <img src="https://i.ibb.co/Vv3pL0H/veloria-logo.png" class="main-logo" alt="Veloria">
 
-        <button class="google-btn" onclick="loginWithGoogle()">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/pwa/google.svg" alt="Google">
+    <div class="card seller-card">
+        <div class="acc-type"><i class="fa-solid fa-user-tie"></i> Seller Account</div>
+        <img src="https://i.ibb.co/Vv3pL0H/veloria-logo.png" class="inner-logo">
+        <button class="google-btn seller-btn" onclick="login('seller')">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/pwa/google.svg" class="google-icon">
             Sign in with Google
         </button>
-
-        <center><div id="loader"></div></center>
     </div>
 
+    <div class="card customer-card">
+        <div class="acc-type"><i class="fa-solid fa-user"></i> Customer Account</div>
+        <img src="https://i.ibb.co/Vv3pL0H/veloria-logo.png" class="inner-logo">
+        <button class="google-btn customer-btn" onclick="login('customer')">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/pwa/google.svg" class="google-icon">
+            Sign in with Google
+        </button>
+    </div>
+
+    <footer>© 2025 Veloria. All rights reserved.</footer>
+
     <script>
-        // --- Firebase Config ---
         const firebaseConfig = {
           apiKey: "AIzaSyA7JcBnkfoj-X1mOI2TMVNjv4i5NVzwYM0",
           authDomain: "veloria-v3.firebaseapp.com",
@@ -100,32 +93,22 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
-        // ၁။ အရေးကြီးဆုံးအပိုင်း - အကောင့်ဝင်ထားပြီးသားဆိုရင် Home ကို တန်းပို့မယ်
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                console.log("User already logged in:", user.displayName);
-                window.location.href = "home.html";
-            }
-        });
-
-        // ၂။ Google Login Function
-        function loginWithGoogle() {
-            document.getElementById('loader').style.display = "block";
+        // ဘရိုပြောသလိုပဲ Auto-skip ကို ဖြုတ်လိုက်ပြီ။ App ဖွင့်ရင် ဒီ Page ကို အမြဲမြင်ရမယ်။
+        
+        function login(role) {
             const provider = new firebase.auth.GoogleAuthProvider();
             
-            // Gemini လိုမျိုး အကောင့်ရွေးခိုင်းတာ မပေါ်ချင်ရင် 
-            // ဒါပေမဲ့ အကောင့်အသစ်သုံးချင်ရင်တော့ အဆင်ပြေအောင်
-            // popup စနစ်ကိုပဲ သုံးထားပါတယ်
-            auth.signInWithPopup(provider)
-                .then((result) => {
-                    console.log("Login Success!");
-                    window.location.href = "home.html";
-                })
-                .catch((error) => {
-                    console.error("Login Failed:", error.message);
-                    document.getElementById('loader').style.display = "none";
-                    alert("Login အဆင်မပြေပါဘူး။ ပြန်ကြိုးစားကြည့်ပါ။");
-                });
+            // Gemini လိုမျိုး Google Account အမြဲရွေးခိုင်းချင်ရင် အောက်က line ကို သုံးရပါတယ်
+            provider.setCustomParameters({ prompt: 'select_account' });
+
+            auth.signInWithPopup(provider).then((result) => {
+                const user = result.user;
+                console.log("Logged in as:", user.displayName, "Role:", role);
+                
+                // Role အလိုက် သိမ်းမလား၊ တန်းသွားမလား ဘရိုစိတ်ကြိုက်
+                localStorage.setItem('userRole', role); 
+                window.location.href = "home.html";
+            }).catch(error => alert(error.message));
         }
     </script>
 </body>
