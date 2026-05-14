@@ -3,97 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veloria - Official Login</title>
+    <title>Veloria - Welcome</title>
     
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
+        :root { --gold: #b88e2f; --dark: #0f172a; }
+        
         body {
-            background-color: #0d1b2a;
-            color: white;
+            margin: 0; padding: 0;
             font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), 
+                        url('https://source.unsplash.com/random/900x1600/?luxury,abstract');
+            background-size: cover;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-        .main-logo { width: 180px; margin-bottom: 30px; }
-        .card {
-            width: 100%;
-            max-width: 350px;
-            border-radius: 25px;
-            padding: 25px;
-            margin-bottom: 20px;
+            align-items: center;
+            color: white;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .seller-card { background-color: #d1e3e9; color: #1b263b; }
-        .customer-card { background-color: #e2d1f9; color: #1b263b; }
-        .inner-logo { width: 80px; margin-bottom: 15px; }
-        
+
+        .welcome-box {
+            padding: 30px;
+            width: 80%;
+            max-width: 350px;
+        }
+
+        h1 { font-size: 42px; margin-bottom: 10px; font-weight: 800; letter-spacing: 2px; }
+        p { opacity: 0.8; font-size: 14px; margin-bottom: 40px; }
+
         .google-btn {
+            background: white;
+            color: #444;
             width: 100%;
-            padding: 12px;
-            border: none;
+            padding: 15px;
             border-radius: 50px;
-            font-weight: bold;
+            border: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
+            gap: 15px;
             font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             transition: 0.3s;
         }
-        .seller-btn { background: linear-gradient(45deg, #b8860b, #ffd700); color: #1b263b; }
-        .customer-btn { background: linear-gradient(45deg, #bdc3c7, #ffffff); color: #1b263b; }
-        
-        /* Google Logo အရွယ်အစားသတ်မှတ်ချက် */
-        .google-icon { 
-            width: 22px; 
-            height: 22px; 
-            margin-right: 12px; 
-            object-fit: contain;
+
+        .google-btn:active { transform: scale(0.95); }
+        .google-btn img { width: 20px; }
+
+        /* Loading Animation */
+        #loader {
+            display: none;
+            margin-top: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--gold);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
         }
-        .footer-text { font-size: 12px; margin-top: 30px; opacity: 0.6; }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <img src="Logo.png" alt="Veloria" class="main-logo">
+    <div class="welcome-box">
+        <h1>VELORIA</h1>
+        <p>Premium Digital Marketplace</p>
 
-    <div class="card seller-card">
-        <h3 style="margin-top:0">Seller Account</h3>
-        <img src="Logo.png" class="inner-logo">
-        <button class="google-btn seller-btn" onclick="login()">
-            <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" class="google-icon">
+        <button class="google-btn" onclick="loginWithGoogle()">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/pwa/google.svg" alt="Google">
             Sign in with Google
         </button>
-    </div>
 
-    <div class="card customer-card">
-        <h3 style="margin-top:0">Customer Account</h3>
-        <img src="Logo.png" class="inner-logo">
-        <button class="google-btn customer-btn" onclick="login()">
-            <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" class="google-icon">
-            Sign in with Google
-        </button>
+        <center><div id="loader"></div></center>
     </div>
-
-    <div class="footer-text">© 2025 Veloria. All rights reserved.</div>
 
     <script>
-        auth.onAuthStateChanged(user => {
-    if (user) {
-        // အကောင့်ရှိနေပြီးသားဆိုရင် Selection ပြစရာမလိုဘဲ Home ကို တန်းပို့မယ်
-        window.location.href = "home.html";
-    }
-});
-        
-        // ဘရိုရဲ့ Config အသစ်
+        // --- Firebase Config ---
         const firebaseConfig = {
           apiKey: "AIzaSyA7JcBnkfoj-X1mOI2TMVNjv4i5NVzwYM0",
           authDomain: "veloria-v3.firebaseapp.com",
@@ -102,21 +97,37 @@
           messagingSenderId: "462890026725",
           appId: "1:462890026725:web:ce9a64a58f7ac6ffdd360c"
         };
-
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
-        function login() {
+        // ၁။ အရေးကြီးဆုံးအပိုင်း - အကောင့်ဝင်ထားပြီးသားဆိုရင် Home ကို တန်းပို့မယ်
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                console.log("User already logged in:", user.displayName);
+                window.location.href = "home.html";
+            }
+        });
+
+        // ၂။ Google Login Function
+        function loginWithGoogle() {
+            document.getElementById('loader').style.display = "block";
             const provider = new firebase.auth.GoogleAuthProvider();
+            
+            // Gemini လိုမျိုး အကောင့်ရွေးခိုင်းတာ မပေါ်ချင်ရင် 
+            // ဒါပေမဲ့ အကောင့်အသစ်သုံးချင်ရင်တော့ အဆင်ပြေအောင်
+            // popup စနစ်ကိုပဲ သုံးထားပါတယ်
             auth.signInWithPopup(provider)
                 .then((result) => {
-                    // Login အောင်မြင်ရင် home.html ကို သွားမယ်
+                    console.log("Login Success!");
                     window.location.href = "home.html";
-                }).catch((error) => {
-                    console.error(error);
-                    alert("Error: " + error.message);
+                })
+                .catch((error) => {
+                    console.error("Login Failed:", error.message);
+                    document.getElementById('loader').style.display = "none";
+                    alert("Login အဆင်မပြေပါဘူး။ ပြန်ကြိုးစားကြည့်ပါ။");
                 });
         }
     </script>
 </body>
 </html>
+
