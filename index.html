@@ -1,192 +1,379 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veloria - Authentication</title>
-    
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Veloria - Login</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            background: #0d1b2a;
-            background: radial-gradient(circle at center, #1b263b 0%, #0d1b2a 100%);
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            padding: 40px 20px;
-            color: white;
-            overflow-x: hidden;
-        }
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
-        .main-logo { width: 220px; margin-top: 20px; margin-bottom: 5px; }
-        .tagline { 
-            font-size: 11px; 
-            letter-spacing: 2.5px; 
-            color: #94a3b8; 
-            font-weight: 800; 
-            margin-bottom: 40px; 
-            text-transform: uppercase; 
-        }
+  <!-- Font Awesome -->
+  <link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
 
-        /* Card Section - အတိုင်း အတိအကျ */
-        .auth-card {
-            width: 100%;
-            max-width: 380px;
-            border-radius: 35px;
-            padding: 28px;
-            margin-bottom: 25px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 20px 45px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
+  <style>
 
-        /* Seller Card: Blue Circuit - */
-        .seller-card {
-            background: linear-gradient(135deg, #d8e9f5 0%, #b8d4e9 100%);
-            background-image: url('https://www.transparenttextures.com/patterns/circuit-board.png');
-            color: #1b263b;
-        }
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Segoe UI',sans-serif;
+    }
 
-        /* Customer Card: Purple Leaves - */
-        .customer-card {
-            background: linear-gradient(135deg, #e3d2f7 0%, #fbc2eb 100%);
-            background-image: url('https://www.transparenttextures.com/patterns/leaves.png');
-            color: #2d132c;
-        }
+    body{
+      min-height:100vh;
+      background:
+      radial-gradient(circle at top,#17325c 0%,#091426 100%);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      overflow-x:hidden;
+      padding:20px;
+      color:white;
+    }
 
-        .label-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 800;
-            font-size: 18px;
-            margin-bottom: 15px;
-        }
+    .phone-frame{
+      width:390px;
+      max-width:100%;
+      padding:25px 18px 30px;
+      border-radius:45px;
+      position:relative;
+    }
 
-        .label-row i {
-            background: #d4af37;
-            color: white;
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            font-size: 13px;
-        }
+    .top-notch{
+      width:120px;
+      height:28px;
+      background:black;
+      border-radius:20px;
+      margin:0 auto 20px;
+    }
 
-        .inner-logo { display: block; width: 140px; margin: 20px auto; }
+    .main-logo{
+      width:210px;
+      display:block;
+      margin:0 auto 5px;
+    }
 
-        /* Google Buttons - Metallic Gradient */
-        .google-btn {
-            width: 100%;
-            padding: 15px;
-            border-radius: 50px;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            font-weight: 700;
-            font-size: 17px;
-            cursor: pointer;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-        }
+    .tagline{
+      text-align:center;
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:2px;
+      color:#d1d5db;
+      margin-bottom:30px;
+    }
 
-        /* Golden Button */
-        .btn-gold {
-            background: linear-gradient(180deg, #c5a059 0%, #f1d592 50%, #c5a059 100%);
-            color: #1b263b;
-        }
+    .auth-card{
+      border-radius:28px;
+      overflow:hidden;
+      margin-bottom:25px;
+      box-shadow:
+      0 10px 35px rgba(0,0,0,0.4);
+      border:2px solid rgba(255,255,255,0.15);
+      backdrop-filter:blur(10px);
+    }
 
-        /* Silver Button */
-        .btn-silver {
-            background: linear-gradient(180deg, #bdc3c7 0%, #ffffff 50%, #bdc3c7 100%);
-            color: #1b263b;
-        }
+    .card-top{
+      padding:20px;
+      min-height:260px;
+      position:relative;
+    }
 
-        .g-logo { width: 22px; }
+    .seller-bg{
+      background:
+      linear-gradient(rgba(255,255,255,.82),rgba(255,255,255,.82)),
+      url('https://www.transparenttextures.com/patterns/circuit-board.png');
+      background-size:cover;
+    }
 
-        footer {
-            margin-top: auto;
-            color: #64748b;
-            font-size: 12px;
-            padding-bottom: 20px;
-        }
+    .customer-bg{
+      background:
+      linear-gradient(rgba(244,224,255,.88),rgba(255,232,247,.88)),
+      url('https://www.transparenttextures.com/patterns/leaves.png');
+      background-size:cover;
+    }
 
-        #loading-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #0d1b2a; display: flex; justify-content: center;
-            align-items: center; z-index: 1000;
-        }
-    </style>
+    .label{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:16px;
+      font-weight:700;
+      color:#132238;
+    }
+
+    .label-icon{
+      width:32px;
+      height:32px;
+      border-radius:50%;
+      background:linear-gradient(to bottom,#f7e18c,#b88a18);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#111827;
+      font-size:14px;
+    }
+
+    .inner-logo{
+      width:135px;
+      display:block;
+      margin:45px auto 0;
+    }
+
+    .button-area{
+      padding:18px;
+      background:white;
+    }
+
+    .google-btn{
+      width:100%;
+      border:none;
+      border-radius:50px;
+      padding:16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:14px;
+      font-size:17px;
+      font-weight:700;
+      cursor:pointer;
+      transition:.25s;
+    }
+
+    .google-btn:active{
+      transform:scale(.98);
+    }
+
+    .gold-btn{
+      background:
+      linear-gradient(
+      to bottom,
+      #c79218,
+      #f4dd93,
+      #b88416
+      );
+      color:#111827;
+      box-shadow:0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .silver-btn{
+      background:
+      linear-gradient(
+      to bottom,
+      #bfc3c7,
+      #ffffff,
+      #b0b0b0
+      );
+      color:#111827;
+      box-shadow:0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .google-logo{
+      width:24px;
+    }
+
+    footer{
+      text-align:center;
+      color:#cbd5e1;
+      margin-top:10px;
+      font-size:13px;
+    }
+
+    /* Loading Screen */
+
+    #loading-screen{
+      position:fixed;
+      inset:0;
+      background:#091426;
+      z-index:9999;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+    }
+
+    .loader-logo{
+      width:140px;
+      animation:pulse 1.2s infinite;
+    }
+
+    @keyframes pulse{
+      0%{opacity:.5;transform:scale(.95);}
+      50%{opacity:1;transform:scale(1);}
+      100%{opacity:.5;transform:scale(.95);}
+    }
+
+  </style>
 </head>
+
 <body>
 
-    <div id="loading-screen"><img src="Logo.png" width="150"></div>
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <img src="Logo.png" class="loader-logo">
+  </div>
 
+  <div class="phone-frame">
+
+    <div class="top-notch"></div>
+
+    <!-- Main Logo -->
     <img src="Logo.png" class="main-logo">
-    <div class="tagline">DIGITAL PRODUCTS ONLY MALL</div>
 
-    <div class="auth-card seller-card">
-        <div class="label-row"><i class="fa-solid fa-user-tie"></i> Seller Account</div>
-        <img src="Logo.png" class="inner-logo">
-        <button class="google-btn btn-gold" onclick="login()">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/pwa/google.svg" class="g-logo">
-            Sign in with Google
-        </button>
+    <div class="tagline">
+      DIGITAL PRODUCTS ONLY MALL
     </div>
 
-    <div class="auth-card customer-card">
-        <div class="label-row"><i class="fa-solid fa-user"></i> Customer Account</div>
+    <!-- Seller -->
+    <div class="auth-card">
+
+      <div class="card-top seller-bg">
+
+        <div class="label">
+          <div class="label-icon">
+            <i class="fa-solid fa-user-tie"></i>
+          </div>
+
+          Seller Account
+        </div>
+
         <img src="Logo.png" class="inner-logo">
-        <button class="google-btn btn-silver" onclick="login()">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/pwa/google.svg" class="g-logo">
-            Sign in with Google
+
+      </div>
+
+      <div class="button-area">
+
+        <button class="google-btn gold-btn"
+        onclick="googleLogin()">
+
+          <img
+          class="google-logo"
+          src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+
+          Sign in with Google
+
         </button>
+
+      </div>
+
     </div>
 
-    <footer>© 2025 Veloria. All rights reserved.</footer>
+    <!-- Customer -->
+    <div class="auth-card">
 
-    <script>
-        const firebaseConfig = {
-          apiKey: "AIzaSyA7JcBnkfoj-X1mOI2TMVNjv4i5NVzwYM0",
-          authDomain: "veloria-v3.firebaseapp.com",
-          projectId: "veloria-v3",
-          storageBucket: "veloria-v3.firebasestorage.app",
-          messagingSenderId: "462890026725",
-          appId: "1:462890026725:web:ce9a64a58f7ac6ffdd360c",
-          databaseURL: "https://veloria-v3-default-rtdb.firebaseio.com"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
+      <div class="card-top customer-bg">
 
-        // အကောင့်ဝင်ပြီးသားဆိုရင် Home ကို တန်းပို့မယ်
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                window.location.href = "home.html";
-            } else {
-                document.getElementById('loading-screen').style.display = 'none';
-            }
-        });
+        <div class="label">
+          <div class="label-icon">
+            <i class="fa-solid fa-user"></i>
+          </div>
 
-        function login() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            provider.setCustomParameters({ prompt: 'select_account' });
-            auth.signInWithPopup(provider)
-                .then(() => { window.location.href = "home.html"; })
-                .catch(err => alert("Error: " + err.message));
-        }
-    </script>
+          Customer Account
+        </div>
+
+        <img src="Logo.png" class="inner-logo">
+
+      </div>
+
+      <div class="button-area">
+
+        <button class="google-btn silver-btn"
+        onclick="googleLogin()">
+
+          <img
+          class="google-logo"
+          src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+
+          Sign in with Google
+
+        </button>
+
+      </div>
+
+    </div>
+
+    <footer>
+      © 2025 Veloria. All rights reserved.
+    </footer>
+
+  </div>
+
+  <script>
+
+    // Firebase Config
+
+    const firebaseConfig = {
+
+      apiKey: "AIzaSyA7JcBnkfoj-X1mOI2TMVNjv4i5NVzwYM0",
+
+      authDomain: "veloria-v3.firebaseapp.com",
+
+      projectId: "veloria-v3",
+
+      storageBucket: "veloria-v3.firebasestorage.app",
+
+      messagingSenderId: "462890026725",
+
+      appId: "1:462890026725:web:ce9a64a58f7ac6ffdd360c",
+
+      databaseURL:
+      "https://veloria-v3-default-rtdb.firebaseio.com"
+
+    };
+
+    // Initialize Firebase
+
+    firebase.initializeApp(firebaseConfig);
+
+    const auth = firebase.auth();
+
+    // Already Logged In
+
+    auth.onAuthStateChanged((user)=>{
+
+      if(user){
+
+        window.location.href = "home.html";
+
+      }else{
+
+        document.getElementById("loading-screen")
+        .style.display = "none";
+
+      }
+
+    });
+
+    // Google Login
+
+    function googleLogin(){
+
+      const provider =
+      new firebase.auth.GoogleAuthProvider();
+
+      provider.setCustomParameters({
+        prompt:"select_account"
+      });
+
+      auth.signInWithPopup(provider)
+
+      .then((result)=>{
+
+        window.location.href = "home.html";
+
+      })
+
+      .catch((error)=>{
+
+        alert(error.message);
+
+      });
+
+    }
+
+  </script>
+
 </body>
 </html>
-
