@@ -3,63 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veloria - Customer Dashboard</title>
+    <title>Veloria - Permanent Account Sync</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        :root { --gold: #b88e2f; --dark: #1b263b; --accent: #4834d4; }
+        :root { --gold: #b88e2f; --dark: #1b263b; }
         body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 95px; }
-
-        /* Profile Banner & Upload */
-        .profile-banner {
-            background: linear-gradient(135deg, #1b263b 0%, #415a77 100%);
-            padding: 45px 20px; text-align: center; color: white;
-            border-bottom-left-radius: 35px; border-bottom-right-radius: 35px;
-        }
+        .profile-banner { background: linear-gradient(135deg, #1b263b 0%, #415a77 100%); padding: 45px 20px; text-align: center; color: white; border-bottom-left-radius: 35px; border-bottom-right-radius: 35px; }
         .profile-img-container { position: relative; display: inline-block; cursor: pointer; }
-        #user-img {
-            width: 95px; height: 95px; border-radius: 50%;
-            border: 3px solid var(--gold); object-fit: cover; background: #eee;
-        }
-        .upload-overlay {
-            position: absolute; bottom: 0; right: 0; background: var(--gold);
-            width: 28px; height: 28px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            border: 2px solid #fff; font-size: 14px;
-        }
-
-        /* Wallet Card */
-        .wallet-card {
-            background: white; margin: -25px 20px 20px 20px;
-            padding: 20px; border-radius: 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-        }
-        .coin-balance { font-size: 24px; font-weight: 800; color: var(--gold); }
-
-        /* Section Box */
-        .section-box { background: white; margin: 20px; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
-        .section-title { font-weight: 800; margin-bottom: 15px; display: block; font-size: 14px; }
-
-        /* History Table */
+        #user-img { width: 95px; height: 95px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; background: #eee; }
+        .upload-overlay { position: absolute; bottom: 0; right: 0; background: var(--gold); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; font-size: 14px; }
+        .wallet-card { background: white; margin: -25px 20px 20px 20px; padding: 20px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .section-box { background: white; margin: 20px; padding: 20px; border-radius: 20px; }
         .history-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-        .history-table th { text-align: left; padding: 10px; border-bottom: 1px solid #eee; color: #636e72; }
         .history-table td { padding: 12px 10px; border-bottom: 1px solid #f9f9f9; }
-
-        /* Bottom Nav */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: white; padding: 12px 0; display: flex;
-            border-top: 1px solid #eee; z-index: 100;
-        }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 12px 0; display: flex; border-top: 1px solid #eee; }
         .nav-item { text-align: center; color: #b2bec3; text-decoration: none; font-size: 11px; flex: 1; }
         .nav-item.active { color: var(--gold); }
-        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
     </style>
 </head>
 <body>
@@ -71,31 +35,24 @@
             <img id="user-img" src="https://via.placeholder.com/95" alt="User">
             <div class="upload-overlay"><i class="fa-solid fa-camera"></i></div>
         </div>
-        <span style="display: block; font-size: 20px; font-weight: 800; margin-top: 10px;" id="user-name">User Name</span>
-        <span style="font-size: 11px; opacity: 0.7;">Customer Account</span>
+        <span style="display: block; font-size: 20px; font-weight: 800; margin-top: 10px;" id="user-name">...</span>
     </div>
 
     <div class="wallet-card">
-        <div>
-            <small style="color:#636e72">Balance</small><br>
-            <span class="coin-balance" id="coin-balance">0</span> <small>VC</small>
-        </div>
+        <div><small>Balance</small><br><span style="font-size: 24px; font-weight: 800; color: var(--gold);" id="coin-balance">0</span> VC</div>
         <a href="coin.html" style="background: var(--gold); color: white; padding: 10px 18px; border-radius: 12px; text-decoration: none; font-size: 12px; font-weight: bold;">Top-up Wallet</a>
     </div>
 
     <div class="section-box">
-        <span class="section-title">📊 Expenditure Graph</span>
+        <span style="font-weight: 800; margin-bottom: 15px; display: block;">📊 Spending Analytics</span>
         <canvas id="expenseChart" height="180"></canvas>
     </div>
 
     <div class="section-box">
-        <span class="section-title">🛍 Purchase History</span>
+        <span style="font-weight: 800; margin-bottom: 15px; display: block;">🛍 Purchase History</span>
         <table class="history-table">
-            <thead>
-                <tr><th>Item</th><th>Date</th><th>Cost</th></tr>
-            </thead>
             <tbody id="purchase-list">
-                <tr><td colspan="3" style="text-align:center; padding:20px; color:#ccc;">No purchase history found</td></tr>
+                <tr><td colspan="3" style="text-align:center; padding:20px; color:#ccc;">Loading history...</td></tr>
             </tbody>
         </table>
     </div>
@@ -123,77 +80,72 @@
 
         let expenseChart;
 
+        // ဇယားကို စစချင်း Blank ထားမယ်
+        function initChart() {
+            const ctx = document.getElementById('expenseChart').getContext('2d');
+            expenseChart = new Chart(ctx, {
+                type: 'line',
+                data: { labels: [], datasets: [{ data: [], borderColor: '#4834d4', fill: true, tension: 0.4 }] },
+                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+            });
+        }
+
         auth.onAuthStateChanged(user => {
             if (user) {
+                // ၁။ User Name ကို Google ဆီက ယူမယ်
                 document.getElementById('user-name').innerText = user.displayName;
 
-                // --- Profile Image Logic (Priority) ---
-                db.ref('users/' + user.uid + '/profilePic').on('value', snap => {
-                    const customPic = snap.val();
-                    const imgElement = document.getElementById('user-img');
-                    if (customPic) imgElement.src = customPic;
-                    else if (user.photoURL) imgElement.src = user.photoURL;
+                // ၂။ အဓိက အချက် - Database ထဲက User Data တွေကို တစ်ခါတည်း ဆွဲထုတ်မယ်
+                const userRef = db.ref('users/' + user.uid);
+                
+                userRef.on('value', snap => {
+                    const data = snap.val() || {};
+
+                    // Profile ပုံကို Database ထဲမှာ အရင်ရှာ၊ မရှိရင် Google ပုံပြ
+                    document.getElementById('user-img').src = data.profilePic || user.photoURL || 'https://via.placeholder.com/95';
+
+                    // Balance Sync
+                    document.getElementById('coin-balance').innerText = (data.balance || 0).toLocaleString();
+
+                    // Purchase History & Chart Update
+                    updateUI(data.purchase_history);
                 });
 
-                // Balance Sync
-                db.ref('users/' + user.uid + '/balance').on('value', snap => {
-                    document.getElementById('coin-balance').innerText = (snap.val() || 0).toLocaleString();
-                });
-
-                initChart();
-                loadHistory(user.uid);
+                if (!expenseChart) initChart();
             } else {
                 window.location.href = "index.html";
             }
         });
 
-        // Profile Upload Function
+        function updateUI(history) {
+            const list = document.getElementById('purchase-list');
+            list.innerHTML = "";
+            if (history) {
+                let dates = [], prices = [];
+                Object.values(history).forEach(item => {
+                    list.innerHTML += `<tr><td>${item.productName}</td><td>${item.date}</td><td>-${item.price} VC</td></tr>`;
+                    dates.push(item.date);
+                    prices.push(item.price);
+                });
+                expenseChart.data.labels = dates;
+                expenseChart.data.datasets[0].data = prices;
+                expenseChart.update();
+            } else {
+                list.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:20px; color:#ccc;">No purchase history found</td></tr>';
+            }
+        }
+
+        // Profile ပုံတင်ခြင်း (Database ထဲမှာ အမြဲတမ်း သိမ်းထားမယ်)
         document.getElementById('profile-upload').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
             const reader = new FileReader();
             reader.onload = function(event) {
                 const base64 = event.target.result;
-                db.ref('users/' + auth.currentUser.uid).update({ profilePic: base64 })
-                  .then(() => alert("Profile Photo Saved!"));
+                db.ref('users/' + auth.currentUser.uid).update({ profilePic: base64 });
             };
             reader.readAsDataURL(file);
         });
-
-        // Blank Chart Init
-        function initChart() {
-            const ctx = document.getElementById('expenseChart').getContext('2d');
-            expenseChart = new Chart(ctx, {
-                type: 'line',
-                data: { labels: [], datasets: [{ label: 'VC', data: [], borderColor: '#4834d4', backgroundColor: 'rgba(72, 52, 212, 0.1)', fill: true, tension: 0.4 }] },
-                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-            });
-        }
-
-        // Data Loader for Chart & Table
-        function loadHistory(uid) {
-            db.ref('users/' + uid + '/purchase_history').on('value', snap => {
-                const data = snap.val();
-                const list = document.getElementById('purchase-list');
-                list.innerHTML = "";
-
-                if (data) {
-                    let dates = [];
-                    let prices = [];
-                    Object.values(data).forEach(item => {
-                        list.innerHTML += `<tr><td>${item.productName}</td><td>${item.date}</td><td>-${item.price} VC</td></tr>`;
-                        dates.push(item.date);
-                        prices.push(item.price);
-                    });
-                    // Update Chart
-                    expenseChart.data.labels = dates;
-                    expenseChart.data.datasets[0].data = prices;
-                    expenseChart.update();
-                } else {
-                    list.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:20px; color:#ccc;">No purchase history found</td></tr>';
-                }
-            });
-        }
     </script>
 </body>
 </html>
