@@ -3,119 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veloria - Official Dashboard</title>
+    <title>Veloria - Professional Dashboard</title>
+    
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
     <style>
-        :root { --gold: #b88e2f; --dark: #1b263b; --accent: #4834d4; --gray: #8e9aaf; }
-        body { background-color: #f4f7f6; font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; padding-bottom: 100px; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --primary-bg: #f8fafc;
+            --card-white: #ffffff;
+            --veloria-gold: #b88e2f;
+            --veloria-dark: #0f172a;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --accent-blue: #4834d4;
+        }
 
-        /* Profile Banner Section */
-        .profile-banner {
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding-bottom: 110px;
+            overflow-x: hidden;
+        }
+
+        /* Hero Profile Section */
+        .profile-hero {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            padding: 50px 20px; text-align: center; color: white;
-            border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 60px 20px 80px 20px;
+            text-align: center;
+            color: white;
+            border-bottom-left-radius: 50px;
+            border-bottom-right-radius: 50px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
-        .profile-img-wrapper {
-            position: relative; display: inline-block; width: 100px; height: 100px;
+
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+            transition: transform 0.3s ease;
         }
+        .avatar-container:active { transform: scale(0.95); }
+
         #user-img {
-            width: 100%; height: 100%; border-radius: 50%;
-            border: 4px solid var(--gold); object-fit: cover;
-            background: #2d3436; transition: 0.3s;
-        }
-        .cam-icon {
-            position: absolute; bottom: 5px; right: 5px;
-            background: var(--gold); color: white; width: 30px; height: 30px;
-            border-radius: 50%; border: 3px solid #1e293b;
-            display: flex; align-items: center; justify-content: center; font-size: 12px;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 4px solid var(--veloria-gold);
+            object-fit: cover;
+            background: #2d3436;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
-        /* Wallet Card */
+        .edit-badge {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: var(--veloria-gold);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 3px solid #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        #user-name {
+            margin-top: 15px;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .user-role {
+            font-size: 12px;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* Floating Wallet Card */
         .wallet-card {
-            background: white; margin: -30px 25px 25px 25px;
-            padding: 25px; border-radius: 24px;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            background: var(--card-white);
+            margin: -40px 25px 25px 25px;
+            padding: 25px;
+            border-radius: 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 10;
         }
-        .balance-box small { color: var(--gray); font-weight: 600; font-size: 12px; }
-        .balance-box h2 { margin: 5px 0 0 0; font-size: 28px; color: var(--gold); }
 
-        /* General Sections */
-        .card-section { background: white; margin: 20px; padding: 20px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .section-header { font-weight: 700; color: var(--dark); margin-bottom: 15px; display: block; font-size: 15px; }
-
-        /* Table Style */
-        .table-res { width: 100%; border-collapse: collapse; }
-        .table-res td { padding: 12px 5px; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
-        .no-data { text-align: center; padding: 30px; color: #cbd5e1; font-size: 13px; }
-
-        /* Bottom Navigation */
-        .nav-bar {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
-            padding: 15px 0; display: flex; border-top: 1px solid #e2e8f0;
+        .balance-info small {
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
         }
-        .nav-link { flex: 1; text-align: center; color: #94a3b8; text-decoration: none; font-size: 10px; font-weight: 600; }
-        .nav-link.active { color: var(--gold); }
-        .nav-link i { font-size: 22px; display: block; margin-bottom: 5px; }
 
-        /* Hidden Chart Canvas if no data */
-        #chart-container { display: none; }
+        .balance-info h2 {
+            margin: 8px 0 0 0;
+            font-size: 30px;
+            font-weight: 800;
+            color: var(--veloria-gold);
+        }
+
+        .topup-btn {
+            background: var(--veloria-dark);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 18px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+        .topup-btn:active { opacity: 0.8; transform: scale(0.98); }
+
+        /* Stats & History Sections */
+        .content-section {
+            background: var(--card-white);
+            margin: 20px;
+            padding: 24px;
+            border-radius: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+        }
+
+        .section-label {
+            font-weight: 800;
+            color: var(--veloria-dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+        }
+
+        .section-label i { color: var(--accent-blue); }
+
+        /* Table Design */
+        .history-list {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history-list tr td {
+            padding: 16px 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+        }
+
+        .item-name { font-weight: 600; color: var(--veloria-dark); }
+        .item-date { font-size: 12px; color: var(--text-muted); display: block; margin-top: 4px; }
+        .item-price { text-align: right; font-weight: 800; color: #ef4444; }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #cbd5e1;
+            font-size: 14px;
+        }
+
+        /* Bottom Tab Bar */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            padding: 15px 5px;
+            display: flex;
+            border-top: 1px solid #e2e8f0;
+            z-index: 1000;
+        }
+
+        .tab-item {
+            flex: 1;
+            text-align: center;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 10px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .tab-item.active { color: var(--veloria-gold); }
+        .tab-item i { font-size: 24px; display: block; margin-bottom: 6px; }
+
     </style>
 </head>
 <body>
 
-    <input type="file" id="img-input" accept="image/*" style="display:none">
+    <input type="file" id="profile-upload-trigger" accept="image/*" style="display: none;">
 
-    <div class="profile-banner">
-        <div class="profile-img-wrapper" onclick="document.getElementById('img-input').click()">
-            <img id="user-img" src="https://via.placeholder.com/100" alt="Profile">
-            <div class="cam-icon"><i class="fa-solid fa-camera"></i></div>
+    <div class="profile-hero">
+        <div class="avatar-container" onclick="document.getElementById('profile-upload-trigger').click()">
+            <img id="user-img" src="https://via.placeholder.com/110" alt="Profile Photo">
+            <div class="edit-badge"><i class="fa-solid fa-camera"></i></div>
         </div>
-        <h3 id="display-name" style="margin: 15px 0 5px 0; font-weight: 800;">Loading...</h3>
-        <span style="font-size: 12px; opacity: 0.6; letter-spacing: 1px;">PREMIUM MEMBER</span>
+        <h3 id="user-name">Synchronizing...</h3>
+        <span class="user-role">Premium Client</span>
     </div>
 
     <div class="wallet-card">
-        <div class="balance-box">
-            <small>AVAILABLE BALANCE</small>
-            <h2><span id="balance">0</span> <span style="font-size: 14px;">VC</span></h2>
+        <div class="balance-info">
+            <small>Total Balance</small>
+            <h2><span id="vc-balance">0</span> <span style="font-size: 14px; opacity: 0.6;">VC</span></h2>
         </div>
-        <a href="coin.html" style="background: var(--dark); color: white; padding: 12px 20px; border-radius: 14px; text-decoration: none; font-size: 12px; font-weight: 700;">
-            TOP UP
-        </a>
+        <a href="coin.html" class="topup-btn">TOP UP</a>
     </div>
 
-    <div class="card-section" id="chart-container">
-        <span class="section-header">📊 Spending Analysis</span>
-        <canvas id="mainChart" height="180"></canvas>
+    <div class="content-section">
+        <span class="section-label"><i class="fa-solid fa-chart-line"></i> Spending Analysis</span>
+        <div style="width: 100%; min-height: 180px;">
+            <canvas id="spendingChart"></canvas>
+        </div>
     </div>
 
-    <div class="card-section">
-        <span class="section-header">🛍 Recent Purchases</span>
-        <table class="table-res">
-            <tbody id="history-list">
-                <tr><td class="no-data">Initializing history...</td></tr>
+    <div class="content-section">
+        <span class="section-label"><i class="fa-solid fa-bag-shopping"></i> Purchase History</span>
+        <table class="history-list">
+            <tbody id="purchase-history-body">
+                <tr><td class="empty-state">Loading your records...</td></tr>
             </tbody>
         </table>
     </div>
 
-    <nav class="nav-bar">
-        <a href="home.html" class="nav-link"><i class="fa-solid fa-house"></i>Home</a>
-        <a href="shops.html" class="nav-link"><i class="fa-solid fa-store"></i>Shops</a>
-        <a href="coin.html" class="nav-link"><i class="fa-solid fa-wallet"></i>Wallet</a>
-        <a href="account.html" class="nav-link active"><i class="fa-solid fa-user-gear"></i>Account</a>
+    <nav class="tab-bar">
+        <a href="home.html" class="tab-item"><i class="fa-solid fa-house-chimney"></i>Home</a>
+        <a href="shops.html" class="tab-item"><i class="fa-solid fa-store"></i>Shops</a>
+        <a href="coin.html" class="tab-item"><i class="fa-solid fa-wallet"></i>Wallet</a>
+        <a href="account.html" class="tab-item active"><i class="fa-solid fa-circle-user"></i>Account</a>
     </nav>
 
     <script>
-        // --- Firebase Initialization ---
+        // --- Firebase Configuration ---
         const firebaseConfig = {
           apiKey: "AIzaSyA7JcBnkfoj-X1mOI2TMVNjv4i5NVzwYM0",
           authDomain: "veloria-v3.firebaseapp.com",
@@ -129,119 +267,130 @@
         const auth = firebase.auth();
         const db = firebase.database();
 
-        let myChart;
+        let chartInstance = null;
 
-        // --- Auth State Monitor ---
+        // --- Core Authentication Logic ---
         auth.onAuthStateChanged(user => {
             if (user) {
-                document.getElementById('display-name').innerText = user.displayName;
-                syncUserData(user);
+                document.getElementById('user-name').innerText = user.displayName;
+                initializeChart();
+                startDataSync(user);
             } else {
                 window.location.href = "index.html";
             }
         });
 
-        // --- Real-time Data Sync ---
-        function syncUserData(user) {
-            const userRef = db.ref('users/' + user.uid);
+        // --- Data Synchronization Logic ---
+        function startDataSync(user) {
+            const userRoot = db.ref('users/' + user.uid);
             
-            userRef.on('value', snap => {
+            userRoot.on('value', snap => {
                 const data = snap.val() || {};
-                
-                // ၁။ Profile Picture Sync
+
+                // 1. Profile Picture Priority Sync
                 const profileImg = document.getElementById('user-img');
                 if (data.profilePic) {
                     profileImg.src = data.profilePic;
                 } else {
-                    profileImg.src = user.photoURL || "https://via.placeholder.com/100";
+                    profileImg.src = user.photoURL || "https://via.placeholder.com/110";
                 }
 
-                // ၂။ Balance Sync
-                document.getElementById('balance').innerText = (data.balance || 0).toLocaleString();
+                // 2. Real-time Balance
+                document.getElementById('vc-balance').innerText = (data.balance || 0).toLocaleString();
 
-                // ၃။ History & Chart Sync
-                renderHistoryAndChart(data.purchase_history);
+                // 3. Purchase Records & Visualization
+                updateHistoryUI(data.purchase_history);
             });
         }
 
-        // --- UI Rendering (Chart & Table) ---
-        function renderHistoryAndChart(history) {
-            const list = document.getElementById('history-list');
-            const chartDiv = document.getElementById('chart-container');
-            list.innerHTML = "";
-
-            if (!history) {
-                list.innerHTML = '<tr><td class="no-data">No history found yet.</td></tr>';
-                chartDiv.style.display = "none";
-                return;
-            }
-
-            chartDiv.style.display = "block";
-            let labels = [], values = [];
-
-            Object.values(history).forEach(item => {
-                list.innerHTML += `
-                    <tr>
-                        <td style="font-weight:600">${item.productName}</td>
-                        <td style="color:#94a3b8">${item.date}</td>
-                        <td style="text-align:right; color:#e11d48; font-weight:700">-${item.price} VC</td>
-                    </tr>
-                `;
-                labels.push(item.date);
-                values.push(item.price);
-            });
-
-            updateChart(labels, values);
-        }
-
-        function updateChart(labels, values) {
-            const ctx = document.getElementById('mainChart').getContext('2d');
-            if (myChart) myChart.destroy();
-            
-            myChart = new Chart(ctx, {
+        // --- Chart & Table Management ---
+        function initializeChart() {
+            const ctx = document.getElementById('spendingChart').getContext('2d');
+            chartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: labels,
+                    labels: [], 
                     datasets: [{
-                        data: values,
+                        data: [],
                         borderColor: '#4834d4',
-                        backgroundColor: 'rgba(72, 52, 212, 0.1)',
+                        backgroundColor: 'rgba(72, 52, 212, 0.08)',
                         fill: true,
                         tension: 0.4,
                         borderWidth: 3,
-                        pointRadius: 0
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#4834d4',
+                        pointRadius: 4
                     }]
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
-                        x: { grid: { display: false } },
+                        x: { display: true, grid: { display: false } },
                         y: { beginAtZero: true, grid: { color: '#f1f5f9' } }
                     }
                 }
             });
         }
 
-        // --- Profile Image Upload (Optimized) ---
-        document.getElementById('img-input').addEventListener('change', function(e) {
+        function updateHistoryUI(history) {
+            const tableBody = document.getElementById('purchase-history-body');
+            tableBody.innerHTML = "";
+
+            if (!history) {
+                tableBody.innerHTML = '<tr><td class="empty-state">No transactions recorded yet.</td></tr>';
+                return;
+            }
+
+            let labels = [];
+            let values = [];
+
+            // Sort and Map Data
+            Object.values(history).forEach(item => {
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>
+                            <span class="item-name">${item.productName}</span>
+                            <span class="item-date">${item.date}</span>
+                        </td>
+                        <td class="item-price">-${item.price} VC</td>
+                    </tr>
+                `;
+                labels.push(item.date);
+                values.push(item.price);
+            });
+
+            // Refresh Chart Data
+            if (chartInstance) {
+                chartInstance.data.labels = labels;
+                chartInstance.data.datasets[0].data = values;
+                chartInstance.update();
+            }
+        }
+
+        // --- Profile Image Upload Logic ---
+        document.getElementById('profile-upload-trigger').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
 
-            // ပုံကို Resize လုပ်ပြီး အသေးလေးပဲ သိမ်းမယ် (Database နေရာမစားအောင်)
             const reader = new FileReader();
             reader.onload = function(event) {
                 const img = new Image();
                 img.onload = function() {
+                    // Create Square Canvas for Profile
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
-                    canvas.width = 150; 
-                    canvas.height = 150;
-                    ctx.drawImage(img, 0, 0, 150, 150);
+                    canvas.width = 200;
+                    canvas.height = 200;
+                    ctx.drawImage(img, 0, 0, 200, 200);
                     
-                    const base64 = canvas.toDataURL('image/jpeg', 0.7);
-                    db.ref('users/' + auth.currentUser.uid).update({ profilePic: base64 })
-                      .then(() => console.log("Profile updated!"));
+                    const optimizedBase64 = canvas.toDataURL('image/jpeg', 0.8);
+                    db.ref('users/' + auth.currentUser.uid).update({ 
+                        profilePic: optimizedBase64 
+                    }).then(() => {
+                        console.log("Database Sync Complete");
+                    });
                 };
                 img.src = event.target.result;
             };
