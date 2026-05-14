@@ -14,140 +14,155 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
-            background-color: #0d1b2a;
-            background-image: linear-gradient(to bottom, #0d1b2a, #1b263b);
-            font-family: 'Segoe UI', sans-serif;
+            background: #0d1b2a;
+            background: linear-gradient(180deg, #0d1b2a 0%, #1b263b 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
             padding: 40px 20px;
             color: white;
+            overflow-x: hidden;
         }
 
-        /* ပုံထဲက အပေါ်ဆုံး Logo */
-        .top-main-logo {
-            width: 240px;
+        /* Top Logo */
+        .main-top-logo {
+            width: 260px;
             margin-bottom: 5px;
         }
 
-        .tagline {
+        .mall-tagline {
             font-size: 11px;
-            letter-spacing: 2px;
+            letter-spacing: 2.5px;
             color: #94a3b8;
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: 40px;
             text-transform: uppercase;
         }
 
-        /* Card ဒီဇိုင်း (ပုံထဲကအတိုင်း အဝိုင်းသားလေးတွေ) */
+        /* Card Container - ပုံထဲကအတိုင်း အတိအကျ */
         .auth-card {
             width: 100%;
             max-width: 380px;
-            border-radius: 30px;
-            padding: 25px;
+            border-radius: 35px;
+            padding: 28px;
             margin-bottom: 25px;
             position: relative;
-            overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* Seller Card: အပြာနုရောင် Circuit pattern */
+        /* Seller Card: Blue Circuit Style */
         .seller-card {
             background: linear-gradient(135deg, #d8e9f5 0%, #b8d4e9 100%);
             background-image: url('https://www.transparenttextures.com/patterns/circuit-board.png');
             color: #1b263b;
         }
 
-        /* Customer Card: ခရမ်းနုရောင် သစ်ရွက် pattern */
+        /* Customer Card: Purple Leaves Style */
         .customer-card {
             background: linear-gradient(135deg, #e3d2f7 0%, #fbc2eb 100%);
             background-image: url('https://www.transparenttextures.com/patterns/leaves.png');
             color: #2d132c;
         }
 
-        .label-row {
+        .role-header {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             font-weight: 800;
-            font-size: 17px;
-            margin-bottom: 10px;
+            font-size: 18px;
+            margin-bottom: 15px;
         }
 
-        .label-row i {
+        .role-header i {
             background: #d4af37;
             color: white;
-            padding: 7px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border-radius: 50%;
-            font-size: 12px;
+            font-size: 13px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
 
         /* Card ထဲက Logo */
-        .inner-logo {
+        .card-inner-logo {
             display: block;
-            width: 130px;
-            margin: 15px auto;
+            width: 140px;
+            margin: 20px auto;
         }
 
-        /* Google Buttons (ပုံထဲကအတိုင်း အလှဆုံး) */
-        .google-btn {
+        /* Google Sign-in Button (အတိအကျပုံစံ) */
+        .google-login-btn {
             width: 100%;
-            padding: 14px;
+            padding: 15px;
             border-radius: 50px;
             border: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 15px;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 17px;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            transition: 0.3s;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
         }
 
-        /* Seller - Golden Button */
-        .btn-seller {
-            background: linear-gradient(to right, #c5a059, #f1d592, #c5a059);
+        /* Seller Golden Button */
+        .btn-gold {
+            background: linear-gradient(180deg, #d4af37 0%, #f1d592 50%, #d4af37 100%);
             color: #1b263b;
         }
 
-        /* Customer - Silver White Button */
-        .btn-customer {
-            background: linear-gradient(to right, #bdc3c7, #ffffff, #bdc3c7);
+        /* Customer Silver Button */
+        .btn-silver {
+            background: linear-gradient(180deg, #bdc3c7 0%, #ffffff 50%, #bdc3c7 100%);
             color: #1b263b;
         }
 
-        .g-logo { width: 20px; }
+        .google-logo-img { width: 22px; }
 
         footer {
             margin-top: auto;
             color: #64748b;
-            font-size: 12px;
-            padding-bottom: 20px;
+            font-size: 13px;
+            padding-bottom: 10px;
+        }
+
+        /* Loading Screen */
+        #splash-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #0d1b2a; display: flex; justify-content: center;
+            align-items: center; z-index: 1000;
         }
     </style>
 </head>
 <body>
 
-    <img src="Logo.png" class="top-main-logo">
-    <div class="tagline">DIGITAL PRODUCTS ONLY MALL</div>
+    <div id="splash-screen"><img src="Logo.png" width="150"></div>
+
+    <img src="Logo.png" class="main-top-logo">
+    <div class="mall-tagline">DIGITAL PRODUCTS ONLY MALL</div>
 
     <div class="auth-card seller-card">
-        <div class="label-row"><i class="fa-solid fa-user-tie"></i> Seller Account</div>
-        <img src="Logo.png" class="inner-logo">
-        <button class="google-btn btn-seller" onclick="login()">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/pwa/google.svg" class="g-logo">
+        <div class="role-header"><i class="fa-solid fa-user-tie"></i> Seller Account</div>
+        <img src="Logo.png" class="card-inner-logo">
+        <button class="google-login-btn btn-gold" onclick="login()">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/pwa/google.svg" class="google-logo-img">
             Sign in with Google
         </button>
     </div>
 
     <div class="auth-card customer-card">
-        <div class="label-row"><i class="fa-solid fa-user"></i> Customer Account</div>
-        <img src="Logo.png" class="inner-logo">
-        <button class="google-btn btn-customer" onclick="login()">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/pwa/google.svg" class="g-logo">
+        <div class="role-header"><i class="fa-solid fa-user"></i> Customer Account</div>
+        <img src="Logo.png" class="card-inner-logo">
+        <button class="google-login-btn btn-silver" onclick="login()">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/pwa/google.svg" class="google-logo-img">
             Sign in with Google
         </button>
     </div>
@@ -167,9 +182,20 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
+        // ၁။ အရေးကြီးဆုံး logic - အကောင့်ဝင်ပြီးသားဆိုရင် Home ကို တန်းပို့မယ်
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // အကောင့်ဝင်ပြီးသားဖြစ်နေရင် index မှာ မနေတော့ဘဲ home.html ကို တန်းသွားမယ်
+                window.location.href = "home.html";
+            } else {
+                // အကောင့်မဝင်ရသေးမှသာ splash screen ကို ဖျောက်ပြီး login page ပြမယ်
+                document.getElementById('splash-screen').style.display = 'none';
+            }
+        });
+
         function login() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            // Google အကောင့်အမြဲရွေးခိုင်းဖို့
+            // Gemini လိုပဲ အကောင့်ရွေးခိုင်းတာ အမြဲပေါ်စေဖို့
             provider.setCustomParameters({ prompt: 'select_account' });
 
             auth.signInWithPopup(provider)
@@ -177,7 +203,7 @@
                     window.location.href = "home.html";
                 })
                 .catch((error) => {
-                    alert("အကောင့်ဝင်လို့မရပါဘူး: " + error.message);
+                    alert("အကောင့်ဝင်ရာတွင် အမှားအယွင်းရှိပါသည်- " + error.message);
                 });
         }
     </script>
