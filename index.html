@@ -86,6 +86,13 @@
     <div class="footer-text">© 2025 Veloria. All rights reserved.</div>
 
     <script>
+        auth.onAuthStateChanged(user => {
+    if (user) {
+        // အကောင့်ရှိနေပြီးသားဆိုရင် Selection ပြစရာမလိုဘဲ Home ကို တန်းပို့မယ်
+        window.location.href = "home.html";
+    }
+});
+        
         // ဘရိုရဲ့ Config အသစ်
         const firebaseConfig = {
           apiKey: "AIzaSyA7JcBnkfoj-X1mOI2TMVNjv4i5NVzwYM0",
