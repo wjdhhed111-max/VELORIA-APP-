@@ -3,78 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veloria Login</title>
+    <title>Veloria - Digital Products Only Mall</title>
+    
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        body {
-            margin: 0; padding: 0; font-family: sans-serif;
-            background-color: #0d1b2a;
-            display: flex; flex-direction: column; align-items: center; min-height: 100vh; color: white;
-        }
-        .main-logo { width: 220px; margin-top: 50px; margin-bottom: 30px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        /* Card Containers */
-        .card {
-            width: 90%; max-width: 380px; border-radius: 25px; margin-bottom: 25px;
-            padding: 20px; position: relative; overflow: hidden;
+        body {
+            background-color: #0d1b2a;
+            background-image: linear-gradient(to bottom, #0f172a, #1e293b);
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Top Main Logo */
+        .top-logo {
+            width: 220px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        .mall-text {
+            color: #94a3b8;
+            font-size: 12px;
+            letter-spacing: 2px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+        }
+
+        /* Card Design */
+        .auth-card {
+            width: 100%;
+            max-width: 360px;
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* Seller Card Style */
+        /* Seller Card - Circuit Blue */
         .seller-card {
-            background: linear-gradient(135deg, #d0e6f5 0%, #b8d4e9 100%);
+            background: linear-gradient(135deg, #d4eaf7 0%, #b8d4e9 100%);
             background-image: url('https://www.transparenttextures.com/patterns/circuit-board.png');
-            color: #1b263b;
         }
 
-        /* Customer Card Style */
+        /* Customer Card - Lavender Leaves */
         .customer-card {
             background: linear-gradient(135deg, #e0c3fc 0%, #fbc2eb 100%);
             background-image: url('https://www.transparenttextures.com/patterns/leaves.png');
-            color: #2d132c;
         }
 
-        .acc-type { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 18px; margin-bottom: 10px; }
-        .acc-type i { background: #d4af37; color: white; padding: 8px; border-radius: 50%; font-size: 14px; }
+        .label-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 16px;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
 
-        .inner-logo { display: block; width: 140px; margin: 15px auto; }
+        .label-row i {
+            background: #d4af37;
+            color: white;
+            padding: 6px;
+            border-radius: 50%;
+            font-size: 12px;
+        }
 
-        /* Sign In Buttons */
+        /* GitHub က Logo.png နဲ့ ချိတ်ဆက်မှု */
+        .card-logo {
+            display: block;
+            width: 130px;
+            margin: 15px auto;
+        }
+
+        /* Google Sign-in Buttons */
         .google-btn {
-            width: 100%; padding: 14px; border-radius: 50px; border: none;
-            display: flex; align-items: center; justify-content: center; gap: 12px;
-            font-weight: 700; cursor: pointer; font-size: 16px; margin-top: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.3s;
+            width: 100%;
+            padding: 12px;
+            border-radius: 50px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-top: 10px;
         }
-        .seller-btn { background: linear-gradient(to right, #d4af37, #f1d592); color: #1b263b; }
-        .customer-btn { background: linear-gradient(to right, #bdc3c7, #2c3e50); color: white; }
 
-        .google-icon { width: 20px; background: white; border-radius: 50%; padding: 2px; }
-        
-        footer { font-size: 12px; opacity: 0.7; margin-top: auto; padding: 20px; }
+        /* Golden Button */
+        .btn-gold {
+            background: linear-gradient(to right, #d4af37, #f1d592, #d4af37);
+            color: #0f172a;
+        }
+
+        /* Silver/White Button */
+        .btn-white {
+            background: linear-gradient(to right, #e2e8f0, #ffffff, #e2e8f0);
+            color: #0f172a;
+        }
+
+        .g-icon { width: 18px; }
+
+        footer {
+            margin-top: auto;
+            color: #64748b;
+            font-size: 11px;
+            padding-bottom: 20px;
+        }
     </style>
 </head>
 <body>
 
-    <img src="https://i.ibb.co/Vv3pL0H/veloria-logo.png" class="main-logo" alt="Veloria">
+    <img src="Logo.png" class="top-logo" alt="Veloria">
+    <div class="mall-text">DIGITAL PRODUCTS ONLY MALL</div>
 
-    <div class="card seller-card">
-        <div class="acc-type"><i class="fa-solid fa-user-tie"></i> Seller Account</div>
-        <img src="https://i.ibb.co/Vv3pL0H/veloria-logo.png" class="inner-logo">
-        <button class="google-btn seller-btn" onclick="login('seller')">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/pwa/google.svg" class="google-icon">
+    <div class="auth-card seller-card">
+        <div class="label-row"><i class="fa-solid fa-user-tie"></i> Seller Account</div>
+        <img src="Logo.png" class="card-logo">
+        <button class="google-btn btn-gold" onclick="loginWithGoogle()">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/pwa/google.svg" class="g-icon">
             Sign in with Google
         </button>
     </div>
 
-    <div class="card customer-card">
-        <div class="acc-type"><i class="fa-solid fa-user"></i> Customer Account</div>
-        <img src="https://i.ibb.co/Vv3pL0H/veloria-logo.png" class="inner-logo">
-        <button class="google-btn customer-btn" onclick="login('customer')">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/pwa/google.svg" class="google-icon">
+    <div class="auth-card customer-card">
+        <div class="label-row"><i class="fa-solid fa-user"></i> Customer Account</div>
+        <img src="Logo.png" class="card-logo">
+        <button class="google-btn btn-white" onclick="loginWithGoogle()">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/pwa/google.svg" class="g-icon">
             Sign in with Google
         </button>
     </div>
@@ -82,35 +155,34 @@
     <footer>© 2025 Veloria. All rights reserved.</footer>
 
     <script>
+        // ဘရိုပေးထားတဲ့ Firebase Config အတိအကျ
         const firebaseConfig = {
           apiKey: "AIzaSyA7JcBnkfoj-X1mOI2TMVNjv4i5NVzwYM0",
           authDomain: "veloria-v3.firebaseapp.com",
           projectId: "veloria-v3",
           storageBucket: "veloria-v3.firebasestorage.app",
           messagingSenderId: "462890026725",
-          appId: "1:462890026725:web:ce9a64a58f7ac6ffdd360c"
+          appId: "1:462890026725:web:ce9a64a58f7ac6ffdd360c",
+          databaseURL: "https://veloria-v3-default-rtdb.firebaseio.com"
         };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
-        // ဘရိုပြောသလိုပဲ Auto-skip ကို ဖြုတ်လိုက်ပြီ။ App ဖွင့်ရင် ဒီ Page ကို အမြဲမြင်ရမယ်။
-        
-        function login(role) {
+        function loginWithGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
             
-            // Gemini လိုမျိုး Google Account အမြဲရွေးခိုင်းချင်ရင် အောက်က line ကို သုံးရပါတယ်
+            // Gemini လိုမျိုး Google account ရွေးခိုင်းတဲ့ box ပေါ်အောင် လုပ်ထားတယ်
             provider.setCustomParameters({ prompt: 'select_account' });
 
-            auth.signInWithPopup(provider).then((result) => {
-                const user = result.user;
-                console.log("Logged in as:", user.displayName, "Role:", role);
-                
-                // Role အလိုက် သိမ်းမလား၊ တန်းသွားမလား ဘရိုစိတ်ကြိုက်
-                localStorage.setItem('userRole', role); 
-                window.location.href = "home.html";
-            }).catch(error => alert(error.message));
+            auth.signInWithPopup(provider)
+                .then((result) => {
+                    // အောင်မြင်ရင် home.html ကို သွားမယ်
+                    window.location.href = "home.html";
+                })
+                .catch((error) => {
+                    alert("အကောင့်ဝင်လို့မရပါဘူး: " + error.message);
+                });
         }
     </script>
 </body>
 </html>
-
