@@ -3,68 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veloria - Permanent Account Sync</title>
+    <title>Veloria - Official Dashboard</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        :root { --gold: #b88e2f; --dark: #1b263b; }
-        body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 95px; }
-        .profile-banner { background: linear-gradient(135deg, #1b263b 0%, #415a77 100%); padding: 45px 20px; text-align: center; color: white; border-bottom-left-radius: 35px; border-bottom-right-radius: 35px; }
-        .profile-img-container { position: relative; display: inline-block; cursor: pointer; }
-        #user-img { width: 95px; height: 95px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; background: #eee; }
-        .upload-overlay { position: absolute; bottom: 0; right: 0; background: var(--gold); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; font-size: 14px; }
-        .wallet-card { background: white; margin: -25px 20px 20px 20px; padding: 20px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        .section-box { background: white; margin: 20px; padding: 20px; border-radius: 20px; }
-        .history-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-        .history-table td { padding: 12px 10px; border-bottom: 1px solid #f9f9f9; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 12px 0; display: flex; border-top: 1px solid #eee; }
-        .nav-item { text-align: center; color: #b2bec3; text-decoration: none; font-size: 11px; flex: 1; }
-        .nav-item.active { color: var(--gold); }
+        :root { --gold: #b88e2f; --dark: #1b263b; --accent: #4834d4; --gray: #8e9aaf; }
+        body { background-color: #f4f7f6; font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; padding-bottom: 100px; -webkit-tap-highlight-color: transparent; }
+
+        /* Profile Banner Section */
+        .profile-banner {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 50px 20px; text-align: center; color: white;
+            border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .profile-img-wrapper {
+            position: relative; display: inline-block; width: 100px; height: 100px;
+        }
+        #user-img {
+            width: 100%; height: 100%; border-radius: 50%;
+            border: 4px solid var(--gold); object-fit: cover;
+            background: #2d3436; transition: 0.3s;
+        }
+        .cam-icon {
+            position: absolute; bottom: 5px; right: 5px;
+            background: var(--gold); color: white; width: 30px; height: 30px;
+            border-radius: 50%; border: 3px solid #1e293b;
+            display: flex; align-items: center; justify-content: center; font-size: 12px;
+        }
+
+        /* Wallet Card */
+        .wallet-card {
+            background: white; margin: -30px 25px 25px 25px;
+            padding: 25px; border-radius: 24px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        }
+        .balance-box small { color: var(--gray); font-weight: 600; font-size: 12px; }
+        .balance-box h2 { margin: 5px 0 0 0; font-size: 28px; color: var(--gold); }
+
+        /* General Sections */
+        .card-section { background: white; margin: 20px; padding: 20px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .section-header { font-weight: 700; color: var(--dark); margin-bottom: 15px; display: block; font-size: 15px; }
+
+        /* Table Style */
+        .table-res { width: 100%; border-collapse: collapse; }
+        .table-res td { padding: 12px 5px; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
+        .no-data { text-align: center; padding: 30px; color: #cbd5e1; font-size: 13px; }
+
+        /* Bottom Navigation */
+        .nav-bar {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
+            padding: 15px 0; display: flex; border-top: 1px solid #e2e8f0;
+        }
+        .nav-link { flex: 1; text-align: center; color: #94a3b8; text-decoration: none; font-size: 10px; font-weight: 600; }
+        .nav-link.active { color: var(--gold); }
+        .nav-link i { font-size: 22px; display: block; margin-bottom: 5px; }
+
+        /* Hidden Chart Canvas if no data */
+        #chart-container { display: none; }
     </style>
 </head>
 <body>
 
-    <input type="file" id="profile-upload" accept="image/*" style="display: none;">
+    <input type="file" id="img-input" accept="image/*" style="display:none">
 
     <div class="profile-banner">
-        <div class="profile-img-container" onclick="document.getElementById('profile-upload').click()">
-            <img id="user-img" src="https://via.placeholder.com/95" alt="User">
-            <div class="upload-overlay"><i class="fa-solid fa-camera"></i></div>
+        <div class="profile-img-wrapper" onclick="document.getElementById('img-input').click()">
+            <img id="user-img" src="https://via.placeholder.com/100" alt="Profile">
+            <div class="cam-icon"><i class="fa-solid fa-camera"></i></div>
         </div>
-        <span style="display: block; font-size: 20px; font-weight: 800; margin-top: 10px;" id="user-name">...</span>
+        <h3 id="display-name" style="margin: 15px 0 5px 0; font-weight: 800;">Loading...</h3>
+        <span style="font-size: 12px; opacity: 0.6; letter-spacing: 1px;">PREMIUM MEMBER</span>
     </div>
 
     <div class="wallet-card">
-        <div><small>Balance</small><br><span style="font-size: 24px; font-weight: 800; color: var(--gold);" id="coin-balance">0</span> VC</div>
-        <a href="coin.html" style="background: var(--gold); color: white; padding: 10px 18px; border-radius: 12px; text-decoration: none; font-size: 12px; font-weight: bold;">Top-up Wallet</a>
+        <div class="balance-box">
+            <small>AVAILABLE BALANCE</small>
+            <h2><span id="balance">0</span> <span style="font-size: 14px;">VC</span></h2>
+        </div>
+        <a href="coin.html" style="background: var(--dark); color: white; padding: 12px 20px; border-radius: 14px; text-decoration: none; font-size: 12px; font-weight: 700;">
+            TOP UP
+        </a>
     </div>
 
-    <div class="section-box">
-        <span style="font-weight: 800; margin-bottom: 15px; display: block;">📊 Spending Analytics</span>
-        <canvas id="expenseChart" height="180"></canvas>
+    <div class="card-section" id="chart-container">
+        <span class="section-header">📊 Spending Analysis</span>
+        <canvas id="mainChart" height="180"></canvas>
     </div>
 
-    <div class="section-box">
-        <span style="font-weight: 800; margin-bottom: 15px; display: block;">🛍 Purchase History</span>
-        <table class="history-table">
-            <tbody id="purchase-list">
-                <tr><td colspan="3" style="text-align:center; padding:20px; color:#ccc;">Loading history...</td></tr>
+    <div class="card-section">
+        <span class="section-header">🛍 Recent Purchases</span>
+        <table class="table-res">
+            <tbody id="history-list">
+                <tr><td class="no-data">Initializing history...</td></tr>
             </tbody>
         </table>
     </div>
 
-    <nav class="bottom-nav">
-        <a href="home.html" class="nav-item"><i class="fa-solid fa-house"></i><span>Home</span></a>
-        <a href="shops.html" class="nav-item"><i class="fa-solid fa-store"></i><span>Shops</span></a>
-        <a href="coin.html" class="nav-item"><i class="fa-solid fa-wallet"></i><span>Wallet</span></a>
-        <a href="account.html" class="nav-item active"><i class="fa-solid fa-user"></i><span>Account</span></a>
+    <nav class="nav-bar">
+        <a href="home.html" class="nav-link"><i class="fa-solid fa-house"></i>Home</a>
+        <a href="shops.html" class="nav-link"><i class="fa-solid fa-store"></i>Shops</a>
+        <a href="coin.html" class="nav-link"><i class="fa-solid fa-wallet"></i>Wallet</a>
+        <a href="account.html" class="nav-link active"><i class="fa-solid fa-user-gear"></i>Account</a>
     </nav>
 
     <script>
+        // --- Firebase Initialization ---
         const firebaseConfig = {
           apiKey: "AIzaSyA7JcBnkfoj-X1mOI2TMVNjv4i5NVzwYM0",
           authDomain: "veloria-v3.firebaseapp.com",
@@ -78,71 +129,121 @@
         const auth = firebase.auth();
         const db = firebase.database();
 
-        let expenseChart;
+        let myChart;
 
-        // ဇယားကို စစချင်း Blank ထားမယ်
-        function initChart() {
-            const ctx = document.getElementById('expenseChart').getContext('2d');
-            expenseChart = new Chart(ctx, {
-                type: 'line',
-                data: { labels: [], datasets: [{ data: [], borderColor: '#4834d4', fill: true, tension: 0.4 }] },
-                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-            });
-        }
-
+        // --- Auth State Monitor ---
         auth.onAuthStateChanged(user => {
             if (user) {
-                // ၁။ User Name ကို Google ဆီက ယူမယ်
-                document.getElementById('user-name').innerText = user.displayName;
-
-                // ၂။ အဓိက အချက် - Database ထဲက User Data တွေကို တစ်ခါတည်း ဆွဲထုတ်မယ်
-                const userRef = db.ref('users/' + user.uid);
-                
-                userRef.on('value', snap => {
-                    const data = snap.val() || {};
-
-                    // Profile ပုံကို Database ထဲမှာ အရင်ရှာ၊ မရှိရင် Google ပုံပြ
-                    document.getElementById('user-img').src = data.profilePic || user.photoURL || 'https://via.placeholder.com/95';
-
-                    // Balance Sync
-                    document.getElementById('coin-balance').innerText = (data.balance || 0).toLocaleString();
-
-                    // Purchase History & Chart Update
-                    updateUI(data.purchase_history);
-                });
-
-                if (!expenseChart) initChart();
+                document.getElementById('display-name').innerText = user.displayName;
+                syncUserData(user);
             } else {
                 window.location.href = "index.html";
             }
         });
 
-        function updateUI(history) {
-            const list = document.getElementById('purchase-list');
-            list.innerHTML = "";
-            if (history) {
-                let dates = [], prices = [];
-                Object.values(history).forEach(item => {
-                    list.innerHTML += `<tr><td>${item.productName}</td><td>${item.date}</td><td>-${item.price} VC</td></tr>`;
-                    dates.push(item.date);
-                    prices.push(item.price);
-                });
-                expenseChart.data.labels = dates;
-                expenseChart.data.datasets[0].data = prices;
-                expenseChart.update();
-            } else {
-                list.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:20px; color:#ccc;">No purchase history found</td></tr>';
-            }
+        // --- Real-time Data Sync ---
+        function syncUserData(user) {
+            const userRef = db.ref('users/' + user.uid);
+            
+            userRef.on('value', snap => {
+                const data = snap.val() || {};
+                
+                // ၁။ Profile Picture Sync
+                const profileImg = document.getElementById('user-img');
+                if (data.profilePic) {
+                    profileImg.src = data.profilePic;
+                } else {
+                    profileImg.src = user.photoURL || "https://via.placeholder.com/100";
+                }
+
+                // ၂။ Balance Sync
+                document.getElementById('balance').innerText = (data.balance || 0).toLocaleString();
+
+                // ၃။ History & Chart Sync
+                renderHistoryAndChart(data.purchase_history);
+            });
         }
 
-        // Profile ပုံတင်ခြင်း (Database ထဲမှာ အမြဲတမ်း သိမ်းထားမယ်)
-        document.getElementById('profile-upload').addEventListener('change', function(e) {
+        // --- UI Rendering (Chart & Table) ---
+        function renderHistoryAndChart(history) {
+            const list = document.getElementById('history-list');
+            const chartDiv = document.getElementById('chart-container');
+            list.innerHTML = "";
+
+            if (!history) {
+                list.innerHTML = '<tr><td class="no-data">No history found yet.</td></tr>';
+                chartDiv.style.display = "none";
+                return;
+            }
+
+            chartDiv.style.display = "block";
+            let labels = [], values = [];
+
+            Object.values(history).forEach(item => {
+                list.innerHTML += `
+                    <tr>
+                        <td style="font-weight:600">${item.productName}</td>
+                        <td style="color:#94a3b8">${item.date}</td>
+                        <td style="text-align:right; color:#e11d48; font-weight:700">-${item.price} VC</td>
+                    </tr>
+                `;
+                labels.push(item.date);
+                values.push(item.price);
+            });
+
+            updateChart(labels, values);
+        }
+
+        function updateChart(labels, values) {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            if (myChart) myChart.destroy();
+            
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        borderColor: '#4834d4',
+                        backgroundColor: 'rgba(72, 52, 212, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { beginAtZero: true, grid: { color: '#f1f5f9' } }
+                    }
+                }
+            });
+        }
+
+        // --- Profile Image Upload (Optimized) ---
+        document.getElementById('img-input').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
+
+            // ပုံကို Resize လုပ်ပြီး အသေးလေးပဲ သိမ်းမယ် (Database နေရာမစားအောင်)
             const reader = new FileReader();
             reader.onload = function(event) {
-                const base64 = event.target.result;
-                db.ref('users/' + auth.currentUser.uid).update({ profilePic: base64 });
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 150; 
+                    canvas.height = 150;
+                    ctx.drawImage(img, 0, 0, 150, 150);
+                    
+                    const base64 = canvas.toDataURL('image/jpeg', 0.7);
+                    db.ref('users/' + auth.currentUser.uid).update({ profilePic: base64 })
+                      .then(() => console.log("Profile updated!"));
+                };
+                img.src = event.target.result;
             };
             reader.readAsDataURL(file);
         });
