@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veloria - Wallet & Top-up</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root { --gold: #b88e2f; --dark: #1b263b; --light: #f4f7f6; }
+        body { background-color: var(--light); font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 90px; }
+
+        /* Header */
+        .wallet-header {
+            background: linear-gradient(135deg, #1b263b 0%, #415a77 100%);
+            padding: 40px 20px; text-align: center; color: white;
+            border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
+        }
+        .balance-label { font-size: 14px; opacity: 0.8; }
+        .balance-amount { font-size: 35px; font-weight: 800; display: block; color: #ffd700; }
+
+        /* Action Tabs */
+        .action-container { display: flex; gap: 15px; padding: 20px; margin-top: -30px; }
+        .action-card {
+            background: white; flex: 1; padding: 15px; border-radius: 20px;
+            text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            text-decoration: none; color: var(--dark); font-weight: bold; font-size: 13px;
+        }
+        .action-card i { display: block; font-size: 24px; margin-bottom: 8px; color: var(--gold); }
+
+        /* Form Sections */
+        .section { background: white; margin: 15px 20px; padding: 20px; border-radius: 20px; display: none; }
+        .section.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .section-title { font-weight: 800; margin-bottom: 15px; display: block; }
+        input, select { 
+            width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 10px; 
+            border: 1px solid #eee; box-sizing: border-box; outline: none;
+        }
+        .submit-btn {
+            width: 100%; padding: 15px; background: var(--dark); color: white;
+            border: none; border-radius: 12px; font-weight: bold; cursor: pointer;
+        }
+
+        /* History Table */
+        .history-box { background: white; margin: 15px 20px; padding: 20px; border-radius: 20px; }
+        .history-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .history-table th { text-align: left; padding: 10px; border-bottom: 1px solid #eee; color: #636e72; }
+        .history-table td { padding: 12px 10px; border-bottom: 1px solid #f9f9f9; }
+        .status-pending { color: #f39c12; font-weight: bold; }
+        .status-success { color: #2ecc71; font-weight: bold; }
+
+        /* Nav */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: white; padding: 12px 0; display: flex; border-top: 1px solid #eee;
+        }
+        .nav-item { text-align: center; color: #b2bec3; text-decoration: none; font-size: 11px; flex: 1; }
+        .nav-item.active { color: var(--gold); }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+    <div class="wallet-header">
+        <span class="balance-label">Total Balance</span>
+        <span class="balance-amount"><span id="coin-balance">0</span> <small style="font-size: 14px;">VC</small></span>
+    </div>
+
+    <div class="action-container">
+        <div class="action-card" onclick="showTab('topup-section')">
+            <i class="fa-solid fa-circle-arrow-down"></i> Top-up
+        </div>
+        <div class="action-card" onclick="showTab('withdraw-section')">
+            <i class="fa-solid fa-money-bill-transfer"></i> Cash out
+        </div>
+    </div>
+
+    <div id="topup-section" class="section active">
+        <span class="section-title">Buy Veloria Coins</span>
+        <select id="payment-method">
+            <option value="kpay">KPay</option>
+            <option value="wave">WaveMoney</option>
+        </select>
+        <input type="number" id="topup-amount" placeholder="Enter Amount (MMK)">
+        <p style="font-size: 11px; color: #636e72;">* လွှဲရမည့်ဖုန်းနံပါတ်: 09-xxxxxxxxx သို့ လွှဲပြီး Screenshot ပို့ပေးပါ။</p>
+        <button class="submit-btn" onclick="requestTopup()">Submit Request</button>
+    </div>
+
+    <div id="withdraw-section" class="section">
+        <span class="section-title">Convert VC to Cash</span>
+        <input type="number" id="withdraw-amount" placeholder="Enter Coin Amount">
+        <input type="text" id="account-info" placeholder="KPay / Wave Number">
+        <button class="submit-btn" style="background: var(--gold);" onclick="requestWithdraw()">Request Cash-out</button>
+    </div>
+
+    <div class="history-box">
+        <span class="section-title">📊 Transaction History</span>
+        <table class="history-table">
+            <thead>
+                <tr><th>Type</th><th>Date</th><th>Amount</th><th>Status</th></tr>
+            </thead>
+            <tbody id="history-list">
+                <tr><td colspan="4" style="text-align:center; padding:20px; color:#ccc;">No transactions found</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="home.html" class="nav-item"><i class="fa-solid fa-house"></i><span>Home</span></a>
+        <a href="shops.html" class="nav-item"><i class="fa-solid fa-store"></i><span>Shops</span></a>
+        <a href="coin.html" class="nav-item active"><i class="fa-solid fa-wallet"></i><span>Wallet</span></a>
+        <a href="account.html" class="nav-item"><i class="fa-solid fa-user"></i><span>Account</span></a>
+    </nav>
+
+    <script>
+        const firebaseConfig = {
+          apiKey: "AIzaSyA7JcBnkfoj-X1mOI2TMVNjv4i5NVzwYM0",
+          authDomain: "veloria-v3.firebaseapp.com",
+          projectId: "veloria-v3",
+          storageBucket: "veloria-v3.firebasestorage.app",
+          messagingSenderId: "462890026725",
+          appId: "1:462890026725:web:ce9a64a58f7ac6ffdd360c",
+          databaseURL: "https://veloria-v3-default-rtdb.firebaseio.com"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // Balance Sync
+                db.ref('users/' + user.uid + '/balance').on('value', snap => {
+                    document.getElementById('coin-balance').innerText = (snap.val() || 0).toLocaleString();
+                });
+                loadHistory(user.uid);
+            } else { window.location.href = "index.html"; }
+        });
+
+        function showTab(tabId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Top-up Request
+        function requestTopup() {
+            const amount = document.getElementById('topup-amount').value;
+            const method = document.getElementById('payment-method').value;
+            if(!amount) return alert("ပမာဏ ထည့်ပေးပါ");
+
+            const requestData = {
+                type: "Top-up",
+                amount: amount + " MMK",
+                date: new Date().toLocaleDateString(),
+                status: "Pending",
+                timestamp: Date.now()
+            };
+
+            db.ref('users/' + auth.currentUser.uid + '/transactions').push(requestData).then(() => {
+                alert("Request ပို့ပြီးပါပြီ။ Admin အတည်ပြုပေးရန် စောင့်ပေးပါ။");
+                document.getElementById('topup-amount').value = "";
+            });
+        }
+
+        // Withdraw Request
+        function requestWithdraw() {
+            const amount = document.getElementById('withdraw-amount').value;
+            const info = document.getElementById('account-info').value;
+            if(!amount || !info) return alert("အချက်အလက် အကုန်ဖြည့်ပါ။");
+
+            const requestData = {
+                type: "Cash-out",
+                amount: amount + " VC",
+                date: new Date().toLocaleDateString(),
+                status: "Pending",
+                timestamp: Date.now()
+            };
+
+            db.ref('users/' + auth.currentUser.uid + '/transactions').push(requestData).then(() => {
+                alert("Withdraw Request ပို့ပြီးပါပြီ။");
+                document.getElementById('withdraw-amount').value = "";
+                document.getElementById('account-info').value = "";
+            });
+        }
+
+        // Load History (ဇယား - ဒေတာရှိမှပြမည့်အပိုင်း)
+        function loadHistory(uid) {
+            db.ref('users/' + uid + '/transactions').on('value', snap => {
+                const list = document.getElementById('history-list');
+                const data = snap.val();
+                list.innerHTML = "";
+
+                if(data) {
+                    Object.values(data).reverse().forEach(item => {
+                        list.innerHTML += `
+                            <tr>
+                                <td>${item.type}</td>
+                                <td>${item.date}</td>
+                                <td>${item.amount}</td>
+                                <td class="${item.status === 'Pending' ? 'status-pending' : 'status-success'}">${item.status}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    list.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px; color:#ccc;">No transactions found</td></tr>';
+                }
+            });
+        }
+    </script>
+</body>
+          </html>
+
